@@ -1,4 +1,4 @@
-# install-with-cpanm
+# get-prereqs
 
 GitHub action to get prerequisites for a local CPAN distribution.
 
