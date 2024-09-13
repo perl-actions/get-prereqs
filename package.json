@@ -29,6 +29,8 @@
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {
+    "@peggyjs/eslint-parser": "^2.0.6",
+    "@peggyjs/eslint-plugin": "^2.1.2",
     "esbuild": "^0.23.1",
     "eslint": "^9.9.1",
     "eslint-config-prettier": "^9.1.0",

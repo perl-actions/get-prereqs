@@ -1,161 +1,141 @@
 {{
-  import { fullVersion } from './cpan-versions.mjs';
+  import { fullVersion } from "./cpan-versions.mjs";
 }}
 
-start
-  = reqs:declarations
+Start = reqs:Declarations
   {
     return reqs.map(req => ({
-      phase: 'runtime',
+      phase: "runtime",
       ...req,
       version: fullVersion(req.version.toString()),
     }));
   }
 
-ws
-  = [ \t\n\r]+
+WS = [ \t\n\r]+
 
-comment
-  = '#' [^\n]* ("\n" / !. )
+Comment = "#" [^\n]* ( "\n" / !. )
 
-_
-  = (
-    [ \t\n\r]+
-    / comment
-  )*
+_ = ( [ \t\n\r]+ / Comment )*
 
-value
-  = undef
-  / string
-  / vstring
-  / number
+Value
+  = Undef
+  / String
+  / VString
+  / Number
 
-statement_sep
-  = ( _ ';' _ )+
+StatementSep = ( _ ";" _ )+
 
-list_sep
-  = ( _ ( ',' / '=>' ) _ )+
+ListSep = ( _ ( "," / "=>" ) _ )+
 
-bareword
-  = [_a-z]i [_a-z0-9]i*
+Bareword = [_a-z]i [_a-z0-9]i*
 
-quoted_bareword
-  = @$bareword &(ws? '=>')
+QuotedBareword = @$Bareword &( WS? "=>" )
 
-integer
-  = digits:$[0-9]+ { return parseInt(digits, 10) }
+Integer = digits:$[0-9]+
+  { return parseInt(digits, 10) }
 
-decimal
-  = number:$([0-9] [0-9_]* '.' [0-9_]*) { return parseFloat(number.replace(/_/, '')) }
+Decimal = number:$( [0-9] [0-9_]* "." [0-9_]* )
+  { return parseFloat(number.replace(/_/, "")) }
 
-number
-  = decimal
-  / integer
+Number
+  = Decimal
+  / Integer
 
-undef
-  = 'undef' { return null }
+Undef = "undef" { return null }
 
-vstring
-  = version:(
-    integer|3.., '.'|
-    / 'v' @integer|1.., '.'|
-  ) { return 'v' + version.join('.') }
+VString = version:(
+    Integer|3.., "."|
+    / "v" @Integer|1.., "."|
+  )
+  { return "v" + version.join(".") }
 
-pairs
-  = '[' @$[^\\\]]* ']'
-  / '{' @$[^\\\}]* '}'
-  / '(' @$[^\\\)]* ')'
-  / '<' @$[^\\\>]* '>'
-  / '"' @$[^\\\"]* '"'
-  / '\'' @$[^\\\']* '\''
+Pairs
+  = "[" @$[^\\\]]* "]"
+  / "{" @$[^\\\}]* "}"
+  / "(" @$[^\\\)]* ")"
+  / "<" @$[^\\\>]* ">"
+  / "'" @$[^\\\']* "'"
+  / "\"" @$[^\\\"]* "\""
 
-string
-  = '"' @$[^\\\"$@]* '"'
-  / '\'' @$[^\\\']* '\''
-  / 'qq' @pairs
-  / 'q' @pairs
+String
+  = "'" @$[^\\\'$@]* "'"
+  / "\"" @$[^\\\"$@]* "\""
+  / "qq" @Pairs
+  / "q" @Pairs
 
-phase
-  = 'configure'
-  / 'build'
-  / 'test'
-  / 'runtime'
-  / 'develop'
+Parameter
+  = Value
+  / QuotedBareword
 
-parameter
-  = value
-  / quoted_bareword
+Parameters = ListSep? @Parameter|1.., ListSep| ListSep?
 
-parameters
-  = list_sep? @parameter|1.., list_sep| list_sep?
+Pragma
+  = "use strict"
+  / "use warnings"
+  / "use " "v"? [0-9] ( "." [0-9]+ )*
 
-pragma
-  = 'use strict'
-  / 'use warnings'
-  / 'use ' 'v'? [0-9] ( '.' [0-9]+ )*
+Declarations = _
+  StatementSep?
+  reqs:(
+    Requirement|1|
+    / PhaseBlock
+    / FeatureBlock
+    / Pragma { return [] }
+    / "1" { return [] }
+  )|.., StatementSep|
+  StatementSep? _
+  { return reqs.flat() }
 
-declarations
-  = _ statement_sep?
-    reqs:(
-      requirement|1|
-      / phase_block
-      / feature_block
-      / pragma { return [] }
-      / '1' { return [] }
-    )|.., statement_sep|
-    statement_sep? _
-    { return reqs.flat() }
+EndBareword = !( [0-9a-z_']i / WS? "=>" )
 
-end_bareword
-  = !([0-9a-z_']i / ws? '=>')
+FeatureBlockParams = feature:Parameter ListSep
+  description:( @Parameter ListSep )?
+  "sub" _ "{" reqs:Declarations "}"
+  { return reqs.map(req => ({ ...req, feature, description})) }
 
-requirements
-  = _ statement_sep?
-    @requirement|.., statement_sep|
-    statement_sep? _
+FeatureBlock = "feature" EndBareword _
+  @(
+    "(" _ @FeatureBlockParams _ ")"
+    / @FeatureBlockParams
+  )
 
-feature_block_params
-  = feature:parameter list_sep
-    description:(@parameter list_sep)?
-    'sub' _ '{' reqs:declarations '}'
-    { return reqs.map(req => ({ ...req, feature, description})) }
+PhaseBlockParams = phase:Parameter ListSep
+  "sub" _ "{" reqs:Declarations "}"
+  { return reqs.map(req => ({ ...req, phase })) }
 
-feature_block
-  = 'feature' end_bareword _ @(
-      '(' _ @feature_block_params _ ')'
-      / @feature_block_params
-    )
+PhaseBlock = "on" EndBareword _
+  @(
+    "(" _ @PhaseBlockParams _ ")"
+    / @PhaseBlockParams
+  )
 
-phase_block_params
-  = phase:parameter list_sep
-    'sub' _ '{' reqs:declarations '}'
-    { return reqs.map(req => ({ ...req, phase })) }
+/*
+Phase
+  = "configure"
+  / "build"
+  / "test"
+  / "runtime"
+  / "develop"
+*/
 
-phase_block
-  = 'on' end_bareword _ @(
-      '(' _ @phase_block_params _ ')'
-      / @phase_block_params
-    )
+Requirement = type:(
+    relationship:Relationship   { return { relationship } }
+    / phase:PhaseSub            { return { phase, relationship: "requires" } }
+  ) EndBareword _
+  params:(
+    "(" _ @Parameters _ ")"
+    / @Parameters
+  )
+  { return { prereq: params[0], version: params[1] || 0, ...type } }
 
-requirement
-  = type:(
-      relationship:relationship   { return { relationship } }
-      / phase:phase_sub           { return { phase, relationship: 'requires' } }
-    ) end_bareword _
-    params:(
-      '(' _ @parameters _ ')'
-      / @parameters
-    )
-    { return { prereq: params[0], version: params[1] || 0, ...type } }
+Relationship
+  = "requires"
+  / "recommends"
+  / "suggests"
+  / "conflicts"
 
-relationship
-  = 'requires'
-  / 'recommends'
-  / 'suggests'
-  / 'conflicts'
-
-phase_sub
-  = 'configure_requires'  { return 'configure' }
-  / 'build_requires'      { return 'build' }
-  / 'test_requires'       { return 'test' }
-  / 'author_requires'     { return 'develop' }
+PhaseSub
+  = "configure_requires"  { return "configure" }
+  / "build_requires"      { return "build" }
+  / "test_requires"       { return "test" }
+  / "author_requires"     { return "develop" }

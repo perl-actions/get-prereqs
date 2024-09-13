@@ -1,7 +1,8 @@
 import globals from 'globals';
 import js from '@eslint/js';
 import mochaPlugin from 'eslint-plugin-mocha';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import prettierPlugin from 'eslint-plugin-prettier/recommended';
+import peggyPlugin from '@peggyjs/eslint-plugin/lib/flat/recommended.js';
 
 export default [
   {
@@ -18,7 +19,11 @@ export default [
       globals: globals.node,
     },
   },
+  peggyPlugin,
   js.configs.recommended,
   mochaPlugin.configs.flat.recommended,
-  eslintPluginPrettierRecommended,
+  {
+    ...prettierPlugin,
+    ignores: ['**/*.pegjs'],
+  },
 ];
