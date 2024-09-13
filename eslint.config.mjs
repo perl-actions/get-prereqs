@@ -1,16 +1,16 @@
 import globals from 'globals';
 import js from '@eslint/js';
+import mochaPlugin from 'eslint-plugin-mocha';
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 
 export default [
   {
-    ignores: [
-      "src/cpanfile-peg.mjs",
-    ],
+    ignores: ['src/*-peg.mjs', 'dist/'],
   },
   {
-    files: [ "src/**/*.mjs" ],
+    files: ['**/*.mjs'],
     languageOptions: {
-      sourceType: "module",
+      sourceType: 'module',
     },
   },
   {
@@ -19,4 +19,6 @@ export default [
     },
   },
   js.configs.recommended,
+  mochaPlugin.configs.flat.recommended,
+  eslintPluginPrettierRecommended,
 ];

@@ -1,7 +1,7 @@
 import * as fs from 'node:fs/promises';
-import { parseCPANfile } from "./parser-cpanfile.mjs";
-import { parseMakefile } from "./parser-makefile.mjs";
-import { fullVersion, mergeVersions } from "./cpan-versions.mjs";
+import { parseCPANfile } from './parser-cpanfile.mjs';
+import { parseMakefile } from './parser-makefile.mjs';
+import { fullVersion, mergeVersions } from './cpan-versions.mjs';
 import * as yaml from 'js-yaml';
 
 const meta2Prereqs = (meta) => {
@@ -11,10 +11,10 @@ const meta2Prereqs = (meta) => {
       for (const [relationship, relationData] of Object.entries(phaseData)) {
         for (const [prereq, version] of Object.entries(relationData)) {
           prereqs.push({
-              phase,
-              relationship,
-              prereq,
-              version: fullVersion(version),
+            phase,
+            relationship,
+            prereq,
+            version: fullVersion(version),
           });
         }
       }
@@ -24,11 +24,11 @@ const meta2Prereqs = (meta) => {
 };
 
 const meta1fields = {
-  build_requires:     ['build',       'requires'],
-  configure_requires: ['configure',   'requires'],
-  conflicts:          ['runtime',     'conflicts'],
-  recommends:         ['runtime',     'recommends'],
-  requires:           ['runtime',     'requires'],
+  build_requires: ['build', 'requires'],
+  configure_requires: ['configure', 'requires'],
+  conflicts: ['runtime', 'conflicts'],
+  recommends: ['runtime', 'recommends'],
+  requires: ['runtime', 'requires'],
 };
 const meta1Prereqs = (meta) => {
   const prereqs = [];
@@ -50,7 +50,9 @@ const meta1Prereqs = (meta) => {
 const metaFeaturePrereqs = (meta) => {
   const prereqs = [];
   if (meta.optional_features) {
-    for (const [feature, featureMeta] of Object.entries(meta.optional_features)) {
+    for (const [feature, featureMeta] of Object.entries(
+      meta.optional_features
+    )) {
       const featurePrereqs = meta2Prereqs(featureMeta);
       for (const prereq of featurePrereqs) {
         prereq.feature = feature;
@@ -87,19 +89,19 @@ const parseMetaYAML = async (content) => {
   return metaPrereqs(meta);
 };
 
-const filterPrereqs = ({prereqs, phases, relationships, features}) => {
-  return prereqs.filter(prereq => (
-    phases.has(prereq.phase)
-      && relationships.has(prereq.relationship)
-      && (!prereq.feature || features.includes(prereq.feature))
-  ));
+const filterPrereqs = ({ prereqs, phases, relationships, features }) => {
+  return prereqs.filter(
+    (prereq) =>
+      phases.has(prereq.phase) &&
+      relationships.has(prereq.relationship) &&
+      (!prereq.feature || features.includes(prereq.feature))
+  );
 };
 
 const sortByPrereq = (a, b) => {
   if (a.prereq < b.prereq) {
     return -1;
-  }
-  else if (a.prereq > b.prereq) {
+  } else if (a.prereq > b.prereq) {
     return 1;
   }
   return 0;
@@ -112,25 +114,26 @@ export const getPrereqs = async ({
   sources,
 }) => {
   for (const source of sources) {
-    const content = await fs.readFile(source, { encoding: 'utf8' }).catch(e => {
-      if (e.code === 'ENOENT') {
-        return null;
-      }
-      else {
-        throw e;
-      }
-    });
+    const content = await fs
+      .readFile(source, { encoding: 'utf8' })
+      .catch((e) => {
+        if (e.code === 'ENOENT') {
+          return null;
+        } else {
+          throw e;
+        }
+      });
     if (content === null) {
       continue;
     }
 
     const parser =
-      source.match(/prereqs\.json$/)  ? parsePrereqsJSON
-      : source.match(/prereqs\.yml/)  ? parsePrereqsYAML
-      : source.match(/\.json$/)       ? parseMetaJSON
-      : source.match(/\.ya?ml$/)      ? parseMetaYAML
-      : source.match(/makefile$/i)    ? parseMakefile
-      : source.match(/cpanfile/i)     ? parseCPANfile
+      source.match(/prereqs\.json$/) ? parsePrereqsJSON
+      : source.match(/prereqs\.yml/) ? parsePrereqsYAML
+      : source.match(/\.json$/) ? parseMetaJSON
+      : source.match(/\.ya?ml$/) ? parseMetaYAML
+      : source.match(/makefile$/i) ? parseMakefile
+      : source.match(/cpanfile/i) ? parseCPANfile
       : null;
     if (parser === null) {
       throw new Error(`Don't know how to parse ${source}`);
@@ -144,11 +147,10 @@ export const getPrereqs = async ({
     }).toSorted(sortByPrereq);
 
     const prereqs = {};
-    for (const {prereq, version} of filteredPrereqs) {
+    for (const { prereq, version } of filteredPrereqs) {
       if (prereqs[prereq]) {
         prereqs[prereq] = mergeVersions([version, prereqs[prereq]]);
-      }
-      else {
+      } else {
         prereqs[prereq] = version;
       }
     }

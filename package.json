@@ -4,7 +4,9 @@
   "description": "Get prereqs for local dist",
   "main": "src/main.mjs",
   "scripts": {
-    "lint": "eslint src/",
+    "tidy": "prettier . --write",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "test": "mocha",
     "build-peg": "peggy src/cpanfile-peg.pegjs --format es -o src/cpanfile-peg.mjs",
     "build": "npm run build-peg && esbuild src/main.mjs --outdir=dist/ --bundle --platform=node --target=node20"
@@ -27,8 +29,12 @@
   "devDependencies": {
     "esbuild": "^0.23.1",
     "eslint": "^9.9.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-mocha": "^10.5.0",
+    "eslint-plugin-prettier": "^5.2.1",
     "globals": "^15.9.0",
     "mocha": "^10.7.3",
-    "peggy": "^4.0.3"
+    "peggy": "^4.0.3",
+    "prettier": "^3.3.3"
   }
 }
