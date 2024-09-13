@@ -12,7 +12,8 @@ jobs:
       - run: npm run test
       - id: get-prereqs
         uses: ./
-        working-directory: test/corpus
+        with:
+          sources: test/corpus/META.json
       - run: echo $PREREQS
         env:
           PREREQS: ${{ steps.get-prereqs.prereqs }}
