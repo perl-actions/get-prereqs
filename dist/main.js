@@ -19041,20 +19041,20 @@ var cpanmVersion = (version2) => {
 var dottedVersion = (versionString) => {
   const versions = [];
   for (const versionRule of versionString.split(/\s*,\s*/)) {
-    const res = version2.match(versionRuleRx);
+    const res = versionRule.match(versionRuleRx);
     let [, comparison, version2] = res ? res : [null, ">=", versionRule];
     const decimalRes = version2.match(/^([0-9]+)(?:\.([0-9]+))?$/);
     if (decimalRes !== null) {
-      const [whole, dec] = decimalRes;
+      const [, whole, dec] = decimalRes;
       const parts = [whole];
       if (dec) {
-        parts.push(dec.match(/.{1,3}/g).map((part) => parseInt(part.padEnd(3, "0"), 10)));
+        parts.push(...dec.match(/.{1,3}/g).map((part) => parseInt(part.padEnd(3, "0"), 10)));
       }
       version2 = "v" + parts.join(".");
     } else if (!version2.match(/^v?[0-9]+(\.[0-9]+)*$/)) {
       throw new Error(`Can't parse "${version2}" as version!`);
     }
-    versions.push(res ? comparison + version2 : version2);
+    versions.push(comparison == ">=" ? version2 : comparison + version2);
   }
   return versions.join(",");
 };
@@ -24422,7 +24422,7 @@ var getPrereqs = async ({
     if (content === null) {
       continue;
     }
-    const parser = source == "prereqs.json" ? parsePrereqsJSON : source == "prereqs.yml" ? parsePrereqsYAML : source.match(/\.json$/) ? parseMetaJSON : source.match(/\.ya?ml$/) ? parseMetaYAML : source.match(/makefile$/i) ? parseMakefile : source.match(/cpanfile/i) ? parseCPANfile : null;
+    const parser = source.match(/prereqs\.json$/) ? parsePrereqsJSON : source.match(/prereqs\.yml/) ? parsePrereqsYAML : source.match(/\.json$/) ? parseMetaJSON : source.match(/\.ya?ml$/) ? parseMetaYAML : source.match(/makefile$/i) ? parseMakefile : source.match(/cpanfile/i) ? parseCPANfile : null;
     if (parser === null) {
       throw new Error(`Don't know how to parse ${source}`);
     }
@@ -24451,7 +24451,7 @@ var run = async () => {
   const relationships = core2.getInput("relationships").split(/\s+/);
   const features = core2.getInput("features").split(/\s+/);
   const sources = core2.getInput("sources").split(/\s+/);
-  const { perl, ...prereqs } = getPrereqs({
+  const { perl, ...prereqs } = await getPrereqs({
     phases,
     relationships,
     features,
