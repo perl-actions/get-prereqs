@@ -54,14 +54,14 @@ export const cpanmVersion = (version) => {
 export const dottedVersion = (versionString) => {
   const versions = [];
   for (const versionRule of versionString.split(/\s*,\s*/)) {
-    const res = version.match(versionRuleRx);
+    const res = versionRule.match(versionRuleRx);
     let [, comparison, version] = res ? res : [null, '>=', versionRule];
     const decimalRes = version.match(/^([0-9]+)(?:\.([0-9]+))?$/);
     if (decimalRes !== null) {
-      const [ whole, dec ] = decimalRes;
+      const [ , whole, dec ] = decimalRes;
       const parts = [ whole ];
       if (dec) {
-        parts.push(dec.match(/.{1,3}/g).map(part => parseInt(part.padEnd(3, '0'), 10)));
+        parts.push(...dec.match(/.{1,3}/g).map(part => parseInt(part.padEnd(3, '0'), 10)));
       }
       version = 'v' + parts.join('.');
     }
@@ -69,7 +69,7 @@ export const dottedVersion = (versionString) => {
       throw new Error(`Can't parse "${version}" as version!`);
     }
 
-    versions.push(res ? comparison + version : version);
+    versions.push(comparison == '>=' ? version : comparison + version);
   }
   return versions.join(',');
 };
