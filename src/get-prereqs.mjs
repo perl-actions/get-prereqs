@@ -125,8 +125,8 @@ export const getPrereqs = async ({
     }
 
     const parser =
-      source == 'prereqs.json'        ? parsePrereqsJSON
-      : source == 'prereqs.yml'       ? parsePrereqsYAML
+      source.match(/prereqs\.json$/)  ? parsePrereqsJSON
+      : source.match(/prereqs\.yml/)  ? parsePrereqsYAML
       : source.match(/\.json$/)       ? parseMetaJSON
       : source.match(/\.ya?ml$/)      ? parseMetaYAML
       : source.match(/makefile$/i)    ? parseMakefile
