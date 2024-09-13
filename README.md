@@ -54,6 +54,9 @@ List of files to search for prerequisites. Supported formats are:
 - `Makefile` as emitted by
   [ExtUtils::MakeMaker](https://metacpan.org/pod/ExtUtils::MakeMaker). This
   was used to communicated dependencies before `MYMETA` files were invented.
+- `dist.ini` as used by [Dist::Zilla](https://metacpan.org/pod/Dist::Zilla).
+  This will only extract the needed to run a `dzil build`, listing them with
+  the unofficial phase of `author`.
 
 Defaults to `MYMETA.json MYMETA.yml META.json META.yml Makefile cpanfile`.
 

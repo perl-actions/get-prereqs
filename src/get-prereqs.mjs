@@ -1,6 +1,7 @@
 import * as fs from 'node:fs/promises';
 import { parseCPANfile } from './parser-cpanfile.mjs';
 import { parseMakefile } from './parser-makefile.mjs';
+import { parseDistINI } from './parser-distini.mjs';
 import { fullVersion, mergeVersions } from './cpan-versions.mjs';
 import * as yaml from 'js-yaml';
 
@@ -134,6 +135,7 @@ export const getPrereqs = async ({
       : source.match(/\.ya?ml$/) ? parseMetaYAML
       : source.match(/makefile$/i) ? parseMakefile
       : source.match(/cpanfile/i) ? parseCPANfile
+      : source.match(/dist\.ini/) ? parseDistINI
       : null;
     if (parser === null) {
       throw new Error(`Don't know how to parse ${source}`);

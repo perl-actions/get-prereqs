@@ -8,7 +8,9 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "test": "mocha",
-    "build-peg": "peggy src/cpanfile-peg.pegjs --format es -o src/cpanfile-peg.mjs",
+    "build-peg": "npm run build-ini-peg && npm run build-cpanfile-peg",
+    "build-cpanfile-peg": "peggy src/cpanfile-peg.pegjs --format es -o src/cpanfile-peg.mjs",
+    "build-ini-peg": "peggy src/ini-peg.pegjs --format es -o src/ini-peg.mjs",
     "build": "npm run build-peg && esbuild src/main.mjs --outdir=dist/ --bundle --platform=node --target=node20"
   },
   "repository": {
