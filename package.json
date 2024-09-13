@@ -1,0 +1,34 @@
+{
+  "name": "get-prereqs",
+  "version": "1.0",
+  "description": "Get prereqs for local dist",
+  "main": "src/main.mjs",
+  "scripts": {
+    "lint": "eslint src/",
+    "test": "mocha",
+    "build-peg": "peggy src/cpanfile-peg.pegjs --format es -o src/cpanfile-peg.mjs",
+    "build": "npm run build-peg && esbuild src/main.mjs --outdir=dist/ --bundle --platform=node --target=node20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/perl-actions/get-prereqs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/perl-actions/get-prereqs/issues"
+  },
+  "homepage": "https://github.com/perl-actions/get-prereqs#readme",
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.23.1",
+    "eslint": "^9.9.1",
+    "globals": "^15.9.0",
+    "mocha": "^10.7.3",
+    "peggy": "^4.0.3"
+  }
+}

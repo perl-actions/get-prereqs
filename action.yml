@@ -1,0 +1,37 @@
+name: "Get Prereqs from Dist"
+description: "Extracts the prereqs from a local dist"
+branding:
+  icon: "arrow-right"
+  color: "blue"
+
+inputs:
+  phases:
+    description: "The phases to get prerequisites for"
+    required: false
+    default: "build test runtime"
+  relationships:
+    description: "The relationships to get prerequisites for"
+    required: false
+    default: "requires"
+  features:
+    description: "The optional features to get prerequisites for"
+    required: false
+    default: ""
+  sources:
+    description: "Source files to check for prerequisites"
+    required: false
+    default: "MYMETA.json MYMETA.yml META.json META.yml Makefile cpanfile"
+
+outputs:
+  perl:
+    description: "The prerequisites formatted with a version in the syntax expected by cpanm or cpm"
+  prereqs:
+    description: "The prerequisites formatted with a version in the syntax expected by cpanm or cpm"
+  prereqs:
+    description: "The prerequisites formatted without a version as expected by CPAN.pm"
+  prereqsJSON:
+    description: "The prerequisites as a JSON string with modules as the keys and versions as the values"
+
+runs:
+  using: "node20"
+  main: "dist/main.js"
