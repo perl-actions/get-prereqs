@@ -8,7 +8,7 @@ const run = async () => {
   const features = core.getInput("features").split(/\s+/);
   const sources = core.getInput("sources").split(/\s+/);
 
-  const { perl, ...prereqs } = getPrereqs({
+  const { perl, ...prereqs } = await getPrereqs({
     phases,
     relationships,
     features,
