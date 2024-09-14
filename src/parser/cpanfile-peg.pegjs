@@ -1,5 +1,5 @@
 {{
-  import { fullVersion } from "./cpan-versions.mjs";
+  import { fullVersion } from './../cpan-versions.mjs';
 }}
 
 Start = reqs:Declarations

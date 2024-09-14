@@ -5,7 +5,7 @@ import stylistic from '@stylistic/eslint-plugin';
 
 export default [
   {
-    ignores: ['src/*-peg.mjs', 'dist/'],
+    ignores: ['src/parser/*-peg.mjs', 'dist/'],
   },
   {
     files:           ['**/*.mjs'],

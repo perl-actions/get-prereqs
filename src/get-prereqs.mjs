@@ -1,94 +1,14 @@
 import fs from 'node:fs/promises';
-import { parseCPANfile } from './parser-cpanfile.mjs';
-import { parseMakefile } from './parser-makefile.mjs';
-import { parseDistINI } from './parser-distini.mjs';
-import { fullVersion, mergeVersions } from './cpan-versions.mjs';
-import yaml from 'js-yaml';
-
-const meta2Prereqs = (meta) => {
-  const prereqs = [];
-  if (meta.prereqs) {
-    for (const [phase, phaseData] of Object.entries(meta.prereqs)) {
-      for (const [relationship, relationData] of Object.entries(phaseData)) {
-        for (const [prereq, version] of Object.entries(relationData)) {
-          prereqs.push({
-            phase,
-            relationship,
-            prereq,
-            version: fullVersion(version),
-          });
-        }
-      }
-    }
-  }
-  return prereqs;
-};
-
-const meta1fields = {
-  build_requires:     ['build', 'requires'],
-  configure_requires: ['configure', 'requires'],
-  conflicts:          ['runtime', 'conflicts'],
-  recommends:         ['runtime', 'recommends'],
-  requires:           ['runtime', 'requires'],
-};
-const meta1Prereqs = (meta) => {
-  const prereqs = [];
-  for (const [field, [phase, relationship]] of Object.entries(meta1fields)) {
-    if (meta[field]) {
-      for (const [prereq, version] of Object.entries(meta[field])) {
-        prereqs.push({
-          phase,
-          relationship,
-          prereq,
-          version: fullVersion(version),
-        });
-      }
-    }
-  }
-  return prereqs;
-};
-
-const metaFeaturePrereqs = (meta) => {
-  const prereqs = [];
-  if (meta.optional_features) {
-    for (const [feature, featureMeta] of Object.entries(
-      meta.optional_features,
-    )) {
-      const featurePrereqs = meta2Prereqs(featureMeta);
-      for (const prereq of featurePrereqs) {
-        prereq.feature = feature;
-      }
-      prereqs.push(...featurePrereqs);
-    }
-  }
-  return prereqs;
-};
-
-const metaPrereqs = meta => [
-  ...meta1Prereqs(meta),
-  ...meta2Prereqs(meta),
-  ...metaFeaturePrereqs(meta),
-];
-
-const parsePrereqsJSON = async (content) => {
-  const parsed = JSON.parse(content);
-  return metaPrereqs({ prereqs: parsed });
-};
-
-const parsePrereqsYAML = async (content) => {
-  const parsed = yaml.load(content);
-  return metaPrereqs({ prereqs: parsed });
-};
-
-const parseMetaJSON = async (content) => {
-  const meta = JSON.parse(content);
-  return metaPrereqs(meta);
-};
-
-const parseMetaYAML = async (content) => {
-  const meta = yaml.load(content);
-  return metaPrereqs(meta);
-};
+import { parseCPANfile } from './parser/cpanfile.mjs';
+import { parseMakefile } from './parser/makefile.mjs';
+import { parseDistINI } from './parser/distini.mjs';
+import {
+  parsePrereqsJSON,
+  parsePrereqsYAML,
+  parseMetaJSON,
+  parseMetaYAML,
+} from './parser/meta.mjs';
+import { mergeVersions } from './cpan-versions.mjs';
 
 const filterPrereqs = ({ prereqs, phases, relationships, features }) => {
   return prereqs.filter(
@@ -97,6 +17,25 @@ const filterPrereqs = ({ prereqs, phases, relationships, features }) => {
       && relationships.has(prereq.relationship)
       && (!prereq.feature || features.includes(prereq.feature)),
   );
+};
+
+const parsers = [
+  [/prereqs\.json$/, parsePrereqsJSON],
+  [/prereqs\.yml/, parsePrereqsYAML],
+  [/\.json$/, parseMetaJSON],
+  [/\.ya?ml$/, parseMetaYAML],
+  [/makefile$/i, parseMakefile],
+  [/cpanfile/i, parseCPANfile],
+  [/dist\.ini/, parseDistINI],
+];
+
+const parserFor = (file) => {
+  for (const [pattern, parser] of parsers) {
+    if (file.match(pattern)) {
+      return parser;
+    }
+  }
+  throw new Error(`Don't know how to parse ${file}`);
 };
 
 const sortByPrereq = (a, b) => {
@@ -116,32 +55,22 @@ export const getPrereqs = async ({
   sources,
 }) => {
   for (const source of sources) {
-    const content = await fs
-      .readFile(source, { encoding: 'utf8' })
-      .catch((e) => {
-        if (e.code === 'ENOENT') {
-          return null;
-        }
-        else {
-          throw e;
-        }
-      });
-    if (content === null) {
-      continue;
+    const parser = parserFor(source);
+
+    let fh;
+    try {
+      fh = await fs.open(source);
+    }
+    catch (e) {
+      if (e.code === 'ENOENT') {
+        continue;
+      }
+      else {
+        throw e;
+      }
     }
 
-    const parser
-      = source.match(/prereqs\.json$/) ? parsePrereqsJSON
-        : source.match(/prereqs\.yml/) ? parsePrereqsYAML
-          : source.match(/\.json$/) ? parseMetaJSON
-            : source.match(/\.ya?ml$/) ? parseMetaYAML
-              : source.match(/makefile$/i) ? parseMakefile
-                : source.match(/cpanfile/i) ? parseCPANfile
-                  : source.match(/dist\.ini/) ? parseDistINI
-                    : null;
-    if (parser === null) {
-      throw new Error(`Don't know how to parse ${source}`);
-    }
+    const content = fh.readFile({ encoding: 'utf8' });
 
     const filteredPrereqs = filterPrereqs({
       prereqs:       await parser(content),

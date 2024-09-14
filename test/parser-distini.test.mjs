@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
 import fs from 'node:fs/promises';
-import { parseDistINI } from '../src/parser-distini.mjs';
+import { parseDistINI } from '../src/parser/distini.mjs';
 import { dirname, join as joinPath } from 'node:path';
 import { fileURLToPath } from 'url';
 

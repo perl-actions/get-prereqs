@@ -1,5 +1,5 @@
 import { parse } from './ini-peg.mjs';
-import { fullVersion } from './cpan-versions.mjs';
+import { fullVersion } from './../cpan-versions.mjs';
 
 const prefixes = {
   '=': '',
@@ -24,7 +24,7 @@ export const parseDistINI = async (content) => {
   const sections = [rootSection];
   let currentSettings = rootSection.settings;
 
-  for (const { section, comment, key, value } of parse(content)) {
+  for (const { section, comment, key, value } of parse(await content)) {
     if (section) {
       currentSettings = {};
       sections.push({ section, settings: currentSettings });

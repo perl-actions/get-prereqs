@@ -4,7 +4,7 @@
 
 
 
-  import { fullVersion } from "./cpan-versions.mjs";
+  import { fullVersion } from './../cpan-versions.mjs';
 
 function peg$subclass(child, parent) {
   function C() { this.constructor = child; }

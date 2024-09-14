@@ -1,4 +1,4 @@
-import { fullVersion } from './cpan-versions.mjs';
+import { fullVersion } from './../cpan-versions.mjs';
 
 const fieldMapping = {
   PREREQ_PM:          ['runtime', 'requires'],
@@ -15,7 +15,7 @@ const prereqRx = new RegExp(
 export const parseMakefile = async (content) => {
   const allPrereqs = [];
 
-  for (const line of content.split('\n')) {
+  for (const line of (await content).split('\n')) {
     if (line.match(/MakeMaker post_initialize section/)) {
       break;
     }

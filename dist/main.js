@@ -4584,7 +4584,7 @@ var require_symbols2 = __commonJS({
 var require_webidl = __commonJS({
   "node_modules/undici/lib/fetch/webidl.js"(exports2, module2) {
     "use strict";
-    var { types } = require("util");
+    var { types: types2 } = require("util");
     var { hasOwn, toUSVString } = require_util2();
     var webidl = {};
     webidl.converters = {};
@@ -4749,7 +4749,7 @@ var require_webidl = __commonJS({
           });
         }
         const result = {};
-        if (!types.isProxy(O)) {
+        if (!types2.isProxy(O)) {
           const keys2 = Object.keys(O);
           for (const key of keys2) {
             const typedKey = keyConverter(key);
@@ -4875,14 +4875,14 @@ var require_webidl = __commonJS({
       return x;
     };
     webidl.converters.ArrayBuffer = function(V, opts = {}) {
-      if (webidl.util.Type(V) !== "Object" || !types.isAnyArrayBuffer(V)) {
+      if (webidl.util.Type(V) !== "Object" || !types2.isAnyArrayBuffer(V)) {
         throw webidl.errors.conversionFailed({
           prefix: `${V}`,
           argument: `${V}`,
           types: ["ArrayBuffer"]
         });
       }
-      if (opts.allowShared === false && types.isSharedArrayBuffer(V)) {
+      if (opts.allowShared === false && types2.isSharedArrayBuffer(V)) {
         throw webidl.errors.exception({
           header: "ArrayBuffer",
           message: "SharedArrayBuffer is not allowed."
@@ -4891,14 +4891,14 @@ var require_webidl = __commonJS({
       return V;
     };
     webidl.converters.TypedArray = function(V, T, opts = {}) {
-      if (webidl.util.Type(V) !== "Object" || !types.isTypedArray(V) || V.constructor.name !== T.name) {
+      if (webidl.util.Type(V) !== "Object" || !types2.isTypedArray(V) || V.constructor.name !== T.name) {
         throw webidl.errors.conversionFailed({
           prefix: `${T.name}`,
           argument: `${V}`,
           types: [T.name]
         });
       }
-      if (opts.allowShared === false && types.isSharedArrayBuffer(V.buffer)) {
+      if (opts.allowShared === false && types2.isSharedArrayBuffer(V.buffer)) {
         throw webidl.errors.exception({
           header: "ArrayBuffer",
           message: "SharedArrayBuffer is not allowed."
@@ -4907,13 +4907,13 @@ var require_webidl = __commonJS({
       return V;
     };
     webidl.converters.DataView = function(V, opts = {}) {
-      if (webidl.util.Type(V) !== "Object" || !types.isDataView(V)) {
+      if (webidl.util.Type(V) !== "Object" || !types2.isDataView(V)) {
         throw webidl.errors.exception({
           header: "DataView",
           message: "Object is not a DataView."
         });
       }
-      if (opts.allowShared === false && types.isSharedArrayBuffer(V.buffer)) {
+      if (opts.allowShared === false && types2.isSharedArrayBuffer(V.buffer)) {
         throw webidl.errors.exception({
           header: "ArrayBuffer",
           message: "SharedArrayBuffer is not allowed."
@@ -4922,13 +4922,13 @@ var require_webidl = __commonJS({
       return V;
     };
     webidl.converters.BufferSource = function(V, opts = {}) {
-      if (types.isAnyArrayBuffer(V)) {
+      if (types2.isAnyArrayBuffer(V)) {
         return webidl.converters.ArrayBuffer(V, opts);
       }
-      if (types.isTypedArray(V)) {
+      if (types2.isTypedArray(V)) {
         return webidl.converters.TypedArray(V, V.constructor);
       }
-      if (types.isDataView(V)) {
+      if (types2.isDataView(V)) {
         return webidl.converters.DataView(V, opts);
       }
       throw new TypeError(`Could not convert ${V} to a BufferSource.`);
@@ -5239,7 +5239,7 @@ var require_file = __commonJS({
   "node_modules/undici/lib/fetch/file.js"(exports2, module2) {
     "use strict";
     var { Blob: Blob2, File: NativeFile } = require("buffer");
-    var { types } = require("util");
+    var { types: types2 } = require("util");
     var { kState } = require_symbols2();
     var { isBlobLike } = require_util2();
     var { webidl } = require_webidl();
@@ -5348,7 +5348,7 @@ var require_file = __commonJS({
         if (isBlobLike(V)) {
           return webidl.converters.Blob(V, { strict: false });
         }
-        if (ArrayBuffer.isView(V) || types.isAnyArrayBuffer(V)) {
+        if (ArrayBuffer.isView(V) || types2.isAnyArrayBuffer(V)) {
           return webidl.converters.BufferSource(V, opts);
         }
       }
@@ -5392,7 +5392,7 @@ var require_file = __commonJS({
             s = convertLineEndingsNative(s);
           }
           bytes.push(encoder.encode(s));
-        } else if (types.isAnyArrayBuffer(element) || types.isTypedArray(element)) {
+        } else if (types2.isAnyArrayBuffer(element) || types2.isTypedArray(element)) {
           if (!element.buffer) {
             bytes.push(new Uint8Array(element));
           } else {
@@ -12272,7 +12272,7 @@ var require_response = __commonJS({
     var { URLSerializer } = require_dataURL();
     var { kHeadersList, kConstruct } = require_symbols();
     var assert = require("assert");
-    var { types } = require("util");
+    var { types: types2 } = require("util");
     var ReadableStream = globalThis.ReadableStream || require("stream/web").ReadableStream;
     var textEncoder = new TextEncoder("utf-8");
     var Response = class _Response {
@@ -12575,7 +12575,7 @@ var require_response = __commonJS({
       if (isBlobLike(V)) {
         return webidl.converters.Blob(V, { strict: false });
       }
-      if (types.isArrayBuffer(V) || types.isTypedArray(V) || types.isDataView(V)) {
+      if (types2.isArrayBuffer(V) || types2.isTypedArray(V) || types2.isDataView(V)) {
         return webidl.converters.BufferSource(V);
       }
       if (util.isFormDataLike(V)) {
@@ -14681,7 +14681,7 @@ var require_util4 = __commonJS({
     var { getEncoding } = require_encoding();
     var { DOMException: DOMException2 } = require_constants2();
     var { serializeAMimeType, parseMIMEType } = require_dataURL();
-    var { types } = require("util");
+    var { types: types2 } = require("util");
     var { StringDecoder } = require("string_decoder");
     var { btoa } = require("buffer");
     var staticPropertyDescriptors = {
@@ -14711,7 +14711,7 @@ var require_util4 = __commonJS({
               });
             }
             isFirstChunk = false;
-            if (!done && types.isUint8Array(value)) {
+            if (!done && types2.isUint8Array(value)) {
               bytes.push(value);
               if ((fr[kLastProgressEventFired] === void 0 || Date.now() - fr[kLastProgressEventFired] >= 50) && !fr[kAborted]) {
                 fr[kLastProgressEventFired] = Date.now();
@@ -17091,7 +17091,7 @@ var require_websocket = __commonJS({
     var { ByteParser } = require_receiver();
     var { kEnumerableProperty, isBlobLike } = require_util();
     var { getGlobalDispatcher } = require_global2();
-    var { types } = require("util");
+    var { types: types2 } = require("util");
     var experimentalWarned = false;
     var WebSocket = class _WebSocket extends EventTarget {
       #events = {
@@ -17238,7 +17238,7 @@ var require_websocket = __commonJS({
           socket.write(buffer, () => {
             this.#bufferedAmount -= value.byteLength;
           });
-        } else if (types.isArrayBuffer(data)) {
+        } else if (types2.isArrayBuffer(data)) {
           const value = Buffer.from(data);
           const frame = new WebsocketFrameSend(value);
           const buffer = frame.createFrame(opcodes.BINARY);
@@ -17460,7 +17460,7 @@ var require_websocket = __commonJS({
         if (isBlobLike(V)) {
           return webidl.converters.Blob(V, { strict: false });
         }
-        if (ArrayBuffer.isView(V) || types.isAnyArrayBuffer(V)) {
+        if (ArrayBuffer.isView(V) || types2.isAnyArrayBuffer(V)) {
           return webidl.converters.BufferSource(V);
         }
       }
@@ -18999,7 +18999,7 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
 var core2 = __toESM(require_core(), 1);
 
 // src/get-prereqs.mjs
-var fs = __toESM(require("node:fs/promises"), 1);
+var import_promises = __toESM(require("node:fs/promises"), 1);
 
 // src/cpan-versions.mjs
 var versionRuleRx = /^([<>]=?|[=!]=)\s*(.*)/;
@@ -19021,16 +19021,16 @@ var mergeVersions = (versionList) => {
 };
 var cpanmVersion = (version2) => {
   const versions = version2.split(/\s*,\s*/);
-  if (versions.length == 1) {
-    if (version2 == ">=0") {
+  if (versions.length === 1) {
+    if (version2 === ">=0") {
       return "";
     } else {
       const res = version2.match(versionRuleRx);
       if (res !== null) {
         const [, comparison, plainVersion] = res;
-        if (comparison == "==") {
+        if (comparison === "==") {
           return `@${plainVersion}`;
-        } else if (comparison == ">=") {
+        } else if (comparison === ">=") {
           return `~${plainVersion}`;
         }
       }
@@ -19042,7 +19042,7 @@ var dottedVersion = (versionString) => {
   const versions = [];
   for (const versionRule of versionString.split(/\s*,\s*/)) {
     const res = versionRule.match(versionRuleRx);
-    let [, comparison, version2] = res ? res : [null, ">=", versionRule];
+    let [, comparison, version2] = res || [null, ">=", versionRule];
     const decimalRes = version2.match(/^([0-9]+)(?:\.([0-9]+))?$/);
     if (decimalRes !== null) {
       const [, whole, dec] = decimalRes;
@@ -19056,12 +19056,12 @@ var dottedVersion = (versionString) => {
     } else if (!version2.match(/^v?[0-9]+(\.[0-9]+)*$/)) {
       throw new Error(`Can't parse "${version2}" as version!`);
     }
-    versions.push(comparison == ">=" ? version2 : comparison + version2);
+    versions.push(comparison === ">=" ? version2 : comparison + version2);
   }
   return versions.join(",");
 };
 
-// src/cpanfile-peg.mjs
+// src/parser/cpanfile-peg.mjs
 function peg$subclass(child, parent) {
   function C() {
     this.constructor = child;
@@ -21591,10 +21591,10 @@ function peg$parse(input, options) {
   }
 }
 
-// src/parser-cpanfile.mjs
-var parseCPANfile = async (content) => peg$parse(content);
+// src/parser/cpanfile.mjs
+var parseCPANfile = async (content) => peg$parse(await content);
 
-// src/parser-makefile.mjs
+// src/parser/makefile.mjs
 var fieldMapping = {
   PREREQ_PM: ["runtime", "requires"],
   BUILD_REQUIRES: ["build", "requires"],
@@ -21607,7 +21607,7 @@ var prereqRx = new RegExp(
 );
 var parseMakefile = async (content) => {
   const allPrereqs = [];
-  for (const line of content.split("\n")) {
+  for (const line of (await content).split("\n")) {
     if (line.match(/MakeMaker post_initialize section/)) {
       break;
     }
@@ -21642,7 +21642,7 @@ var parseMakefile = async (content) => {
   return allPrereqs;
 };
 
-// src/ini-peg.mjs
+// src/parser/ini-peg.mjs
 function peg$subclass2(child, parent) {
   function C() {
     this.constructor = child;
@@ -22550,15 +22550,15 @@ function peg$parse2(input, options) {
   }
 }
 
-// src/parser-distini.mjs
+// src/parser/distini.mjs
 var prefixes = {
   "=": "",
   "@": "Dist::Zilla::PluginBundle::",
   "%": "Dist::Zilla::Stash::",
   "": "Dist::Zilla::Plugin::",
-  _: "Dist::Zilla"
+  "_": "Dist::Zilla"
 };
-var prefixRx = new RegExp("^(?:_$|[=@%]|)");
+var prefixRx = /^(?:_$|[=@%]|)/;
 var expandConfigPackageName = (section) => section.replace(prefixRx, (prefix) => prefixes[prefix]);
 var parseDistINI = async (content) => {
   const prereqs = [];
@@ -22568,7 +22568,7 @@ var parseDistINI = async (content) => {
   };
   const sections = [rootSection];
   let currentSettings = rootSection.settings;
-  for (const { section, comment, key, value } of peg$parse2(content)) {
+  for (const { section, comment, key, value } of peg$parse2(await content)) {
     if (section) {
       currentSettings = {};
       sections.push({ section, settings: currentSettings });
@@ -22598,7 +22598,7 @@ var parseDistINI = async (content) => {
       prereq: plugin,
       version: fullVersion(settings[":version"] || "0")
     });
-    if (plugin == "Dist::Zilla::PluginBundle::Filter" || plugin == "Dist::Zilla::PluginBundle::ConfigSlicer") {
+    if (plugin === "Dist::Zilla::PluginBundle::Filter" || plugin === "Dist::Zilla::PluginBundle::ConfigSlicer") {
       prereqs.push({
         prereq: expandConfigPackageName(settings["-bundle"]),
         version: fullVersion(settings["-version"] || "0")
@@ -25188,14 +25188,53 @@ function renamed(from, to) {
     throw new Error("Function yaml." + from + " is removed in js-yaml 4. Use yaml." + to + " instead, which is now safe by default.");
   };
 }
+var Type = type;
+var Schema = schema;
+var FAILSAFE_SCHEMA = failsafe;
+var JSON_SCHEMA = json;
+var CORE_SCHEMA = core;
+var DEFAULT_SCHEMA = _default;
 var load = loader.load;
 var loadAll = loader.loadAll;
 var dump = dumper.dump;
+var YAMLException = exception;
+var types = {
+  binary,
+  float,
+  map,
+  null: _null,
+  pairs,
+  set,
+  timestamp,
+  bool,
+  int,
+  merge,
+  omap,
+  seq,
+  str
+};
 var safeLoad = renamed("safeLoad", "load");
 var safeLoadAll = renamed("safeLoadAll", "loadAll");
 var safeDump = renamed("safeDump", "dump");
+var jsYaml = {
+  Type,
+  Schema,
+  FAILSAFE_SCHEMA,
+  JSON_SCHEMA,
+  CORE_SCHEMA,
+  DEFAULT_SCHEMA,
+  load,
+  loadAll,
+  dump,
+  YAMLException,
+  types,
+  safeLoad,
+  safeLoadAll,
+  safeDump
+};
+var js_yaml_default = jsYaml;
 
-// src/get-prereqs.mjs
+// src/cpan-meta.mjs
 var meta2Prereqs = (meta) => {
   const prereqs = [];
   if (meta.prereqs) {
@@ -25257,26 +25296,47 @@ var metaPrereqs = (meta) => [
   ...meta2Prereqs(meta),
   ...metaFeaturePrereqs(meta)
 ];
+
+// src/parser/meta.mjs
 var parsePrereqsJSON = async (content) => {
-  const parsed = JSON.parse(content);
-  return metaPrereqs({ prereqs: parsed });
+  const prereqs = JSON.parse(await content);
+  return metaPrereqs({ prereqs });
 };
 var parsePrereqsYAML = async (content) => {
-  const parsed = load(content);
-  return metaPrereqs({ prereqs: parsed });
+  const prereqs = js_yaml_default.load(await content);
+  return metaPrereqs({ prereqs });
 };
 var parseMetaJSON = async (content) => {
-  const meta = JSON.parse(content);
+  const meta = JSON.parse(await content);
   return metaPrereqs(meta);
 };
 var parseMetaYAML = async (content) => {
-  const meta = load(content);
+  const meta = js_yaml_default.load(await content);
   return metaPrereqs(meta);
 };
+
+// src/get-prereqs.mjs
 var filterPrereqs = ({ prereqs, phases, relationships, features }) => {
   return prereqs.filter(
     (prereq) => phases.has(prereq.phase) && relationships.has(prereq.relationship) && (!prereq.feature || features.includes(prereq.feature))
   );
+};
+var parsers = [
+  [/prereqs\.json$/, parsePrereqsJSON],
+  [/prereqs\.yml/, parsePrereqsYAML],
+  [/\.json$/, parseMetaJSON],
+  [/\.ya?ml$/, parseMetaYAML],
+  [/makefile$/i, parseMakefile],
+  [/cpanfile/i, parseCPANfile],
+  [/dist\.ini/, parseDistINI]
+];
+var parserFor = (file) => {
+  for (const [pattern, parser] of parsers) {
+    if (file.match(pattern)) {
+      return parser;
+    }
+  }
+  throw new Error(`Don't know how to parse ${file}`);
 };
 var sortByPrereq = (a, b) => {
   if (a.prereq < b.prereq) {
@@ -25293,20 +25353,18 @@ var getPrereqs = async ({
   sources
 }) => {
   for (const source of sources) {
-    const content = await fs.readFile(source, { encoding: "utf8" }).catch((e) => {
+    const parser = parserFor(source);
+    let fh;
+    try {
+      fh = await import_promises.default.open(source);
+    } catch (e) {
       if (e.code === "ENOENT") {
-        return null;
+        continue;
       } else {
         throw e;
       }
-    });
-    if (content === null) {
-      continue;
     }
-    const parser = source.match(/prereqs\.json$/) ? parsePrereqsJSON : source.match(/prereqs\.yml/) ? parsePrereqsYAML : source.match(/\.json$/) ? parseMetaJSON : source.match(/\.ya?ml$/) ? parseMetaYAML : source.match(/makefile$/i) ? parseMakefile : source.match(/cpanfile/i) ? parseCPANfile : source.match(/dist\.ini/) ? parseDistINI : null;
-    if (parser === null) {
-      throw new Error(`Don't know how to parse ${source}`);
-    }
+    const content = fh.readFile({ encoding: "utf8" });
     const filteredPrereqs = filterPrereqs({
       prereqs: await parser(content),
       phases: new Set(phases),
@@ -25348,7 +25406,6 @@ var run = async () => {
   core2.setOutput("prereqs", prereqVersionString);
   core2.setOutput("prereqs-no-version", prereqString);
   core2.setOutput("prereqsJSON", JSON.stringify(prereqs));
-  return;
 };
 (async () => {
   try {
