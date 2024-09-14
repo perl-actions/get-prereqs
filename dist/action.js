@@ -18862,7 +18862,7 @@ var require_core = __commonJS({
       process.env["PATH"] = `${inputPath}${path.delimiter}${process.env["PATH"]}`;
     }
     exports2.addPath = addPath;
-    function getInput2(name, options) {
+    function getInput(name, options) {
       const val = process.env[`INPUT_${name.replace(/ /g, "_").toUpperCase()}`] || "";
       if (options && options.required && !val) {
         throw new Error(`Input required and not supplied: ${name}`);
@@ -18872,9 +18872,9 @@ var require_core = __commonJS({
       }
       return val.trim();
     }
-    exports2.getInput = getInput2;
+    exports2.getInput = getInput;
     function getMultilineInput(name, options) {
-      const inputs = getInput2(name, options).split("\n").filter((x) => x !== "");
+      const inputs = getInput(name, options).split("\n").filter((x) => x !== "");
       if (options && options.trimWhitespace === false) {
         return inputs;
       }
@@ -18884,7 +18884,7 @@ var require_core = __commonJS({
     function getBooleanInput(name, options) {
       const trueValue = ["true", "True", "TRUE"];
       const falseValue = ["false", "False", "FALSE"];
-      const val = getInput2(name, options);
+      const val = getInput(name, options);
       if (trueValue.includes(val))
         return true;
       if (falseValue.includes(val))
@@ -18893,7 +18893,7 @@ var require_core = __commonJS({
 Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
     }
     exports2.getBooleanInput = getBooleanInput;
-    function setOutput2(name, value) {
+    function setOutput(name, value) {
       const filePath = process.env["GITHUB_OUTPUT"] || "";
       if (filePath) {
         return file_command_1.issueFileCommand("OUTPUT", file_command_1.prepareKeyValueMessage(name, value));
@@ -18901,16 +18901,16 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       process.stdout.write(os.EOL);
       command_1.issueCommand("set-output", { name }, utils_1.toCommandValue(value));
     }
-    exports2.setOutput = setOutput2;
+    exports2.setOutput = setOutput;
     function setCommandEcho(enabled) {
       command_1.issue("echo", enabled ? "on" : "off");
     }
     exports2.setCommandEcho = setCommandEcho;
-    function setFailed2(message) {
+    function setFailed(message) {
       process.exitCode = ExitCode.Failure;
       error(message);
     }
-    exports2.setFailed = setFailed2;
+    exports2.setFailed = setFailed;
     function isDebug() {
       return process.env["RUNNER_DEBUG"] === "1";
     }
@@ -18996,7 +18996,7 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
 });
 
 // src/main.mjs
-var core2 = __toESM(require_core(), 1);
+var import_core = __toESM(require_core(), 1);
 
 // src/get-prereqs.mjs
 var import_promises = __toESM(require("node:fs/promises"), 1);
@@ -25394,10 +25394,14 @@ var getPrereqs = async ({
 
 // src/main.mjs
 var run = async () => {
-  const phases = core2.getInput("phases").split(/\s+/);
-  const relationships = core2.getInput("relationships").split(/\s+/);
-  const features = core2.getInput("features").split(/\s+/);
-  const sources = core2.getInput("sources").split(/\s+/);
+  const phasesInput = import_core.default.getInput("phases");
+  const relationshipsInput = import_core.default.getInput("relationships");
+  const featuresInput = import_core.default.getInput("features");
+  const sourcesInput = import_core.default.getInput("sources");
+  const phases = new Set(phasesInput.split(/\s+/));
+  const relationships = new Set(relationshipsInput.split(/\s+/));
+  const features = new Set(featuresInput.split(/\s+/));
+  const sources = sourcesInput.split(/\s+/);
   const { perl, ...prereqs } = await getPrereqs({
     phases,
     relationships,
@@ -25405,23 +25409,26 @@ var run = async () => {
     sources
   });
   if (perl) {
-    core2.setOutput("perl", dottedVersion(perl));
+    import_core.default.setOutput("perl", dottedVersion(perl));
   }
   const prereqString = Object.keys(prereqs).map((module2) => `${module2}
 `).join("");
   const prereqVersionString = Object.entries(prereqs).map(([module2, version2]) => `${module2}${cpanmVersion(version2)}
 `).join("");
-  core2.setOutput("prereqs", prereqVersionString);
-  core2.setOutput("prereqs-no-version", prereqString);
-  core2.setOutput("prereqsJSON", JSON.stringify(prereqs));
+  import_core.default.setOutput("prereqs", prereqVersionString);
+  import_core.default.setOutput("prereqs-no-version", prereqString);
+  import_core.default.setOutput("prereqsJSON", JSON.stringify(prereqs));
 };
-(async () => {
+var main_default = async () => {
   try {
     await run();
   } catch (error) {
-    core2.setFailed(error.message);
+    import_core.default.setFailed(error.message);
   }
-})();
+};
+
+// src/action.mjs
+main_default();
 /*! Bundled license information:
 
 undici/lib/fetch/body.js:

@@ -1,12 +1,17 @@
-import * as core from '@actions/core';
+import core from '@actions/core';
 import { getPrereqs } from './get-prereqs.mjs';
 import { cpanmVersion, dottedVersion } from './cpan-versions.mjs';
 
-const run = async () => {
-  const phases = core.getInput('phases').split(/\s+/);
-  const relationships = core.getInput('relationships').split(/\s+/);
-  const features = core.getInput('features').split(/\s+/);
-  const sources = core.getInput('sources').split(/\s+/);
+export const run = async () => {
+  const phasesInput = core.getInput('phases');
+  const relationshipsInput = core.getInput('relationships');
+  const featuresInput = core.getInput('features');
+  const sourcesInput = core.getInput('sources');
+
+  const phases = new Set(phasesInput.split(/\s+/));
+  const relationships = new Set(relationshipsInput.split(/\s+/));
+  const features = new Set(featuresInput.split(/\s+/));
+  const sources = sourcesInput.split(/\s+/);
 
   const { perl, ...prereqs } = await getPrereqs({
     phases,
@@ -31,11 +36,11 @@ const run = async () => {
   core.setOutput('prereqsJSON', JSON.stringify(prereqs));
 };
 
-(async () => {
+export default async () => {
   try {
     await run();
   }
   catch (error) {
     core.setFailed(error.message);
   }
-})();
+};

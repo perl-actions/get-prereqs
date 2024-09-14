@@ -10,7 +10,7 @@
     "build-peg": "npm run build-peg:ini && npm run build-peg:cpanfile",
     "build-peg:cpanfile": "peggy src/parser/cpanfile-peg.pegjs --format es -o src/parser/cpanfile-peg.mjs",
     "build-peg:ini": "peggy src/parser/ini-peg.pegjs --format es -o src/parser/ini-peg.mjs",
-    "build": "npm run build-peg && esbuild src/main.mjs --outdir=dist/ --bundle --platform=node --target=node20"
+    "build": "npm run build-peg && esbuild src/action.mjs --outdir=dist/ --bundle --platform=node --target=node20"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
     "esbuild": "^0.23.1",
     "eslint": "^9.9.1",
     "eslint-plugin-mocha": "^10.5.0",
+    "esmock": "^2.6.7",
     "globals": "^15.9.0",
     "mocha": "^10.7.3",
     "peggy": "^4.0.3"
