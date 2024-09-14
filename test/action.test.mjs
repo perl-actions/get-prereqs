@@ -37,7 +37,7 @@ const mockAction = async (module) => {
 const main = await mockAction('../src/main.mjs');
 
 describe('GitHub action', function () {
-  it('runs', async function () {
+  it('works with META.json', async function () {
     const { outputs } = await main({
       sources:       joinPath(__dirname, 'corpus', 'META.json'),
       phases:        'test',
