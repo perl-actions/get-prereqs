@@ -6,10 +6,10 @@ const prefixes = {
   '@': 'Dist::Zilla::PluginBundle::',
   '%': 'Dist::Zilla::Stash::',
   '':  'Dist::Zilla::Plugin::',
-  '_': 'Dist::Zilla',
 };
 
-const prefixRx = /^(?:_$|[=@%]|)/;
+const quoteMeta = k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const prefixRx = new RegExp('^(?:' + Object.keys(prefixes).map(quoteMeta).join('|') + ')');
 
 const expandConfigPackageName = section =>
   section.replace(prefixRx, prefix => prefixes[prefix]);
@@ -19,15 +19,25 @@ export const parseDistINI = async (content) => {
 
   const rootSection = {
     section:  '_',
+    pack:     'Dist::Zilla',
     settings: {},
   };
-  const sections = [rootSection];
   let currentSettings = rootSection.settings;
+  const sections = [rootSection];
 
   for (const { section, comment, key, value } of parse(await content)) {
     if (section) {
+      const [, plugin, name] = section.match(/^([^\/]*)(?:\/(.*))?$/);
+      const pack = expandConfigPackageName(plugin);
+
       currentSettings = {};
-      sections.push({ section, settings: currentSettings });
+      sections.push({
+        section,
+        plugin,
+        pack,
+        name,
+        settings: currentSettings,
+      });
     }
     else if (comment) {
       const res = comment.match(/^\s*authordep\s*(\S+)\s*(?:=\s*([^;]+))?\s*/);
@@ -52,16 +62,15 @@ export const parseDistINI = async (content) => {
     });
   }
 
-  for (const { section, settings } of sections) {
-    const plugin = expandConfigPackageName(section.replace(/\s*\/.*$/, ''));
+  for (const { section, pack, settings } of sections) {
     prereqs.push({
-      prereq:  plugin,
+      prereq:  pack,
       version: fullVersion(settings[':version'] || '0'),
     });
 
     if (
-      plugin === 'Dist::Zilla::PluginBundle::Filter'
-      || plugin === 'Dist::Zilla::PluginBundle::ConfigSlicer'
+      pack === 'Dist::Zilla::PluginBundle::Filter'
+      || pack === 'Dist::Zilla::PluginBundle::ConfigSlicer'
     ) {
       prereqs.push({
         prereq:  expandConfigPackageName(settings['-bundle']),

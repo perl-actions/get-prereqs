@@ -22555,23 +22555,32 @@ var prefixes = {
   "=": "",
   "@": "Dist::Zilla::PluginBundle::",
   "%": "Dist::Zilla::Stash::",
-  "": "Dist::Zilla::Plugin::",
-  "_": "Dist::Zilla"
+  "": "Dist::Zilla::Plugin::"
 };
-var prefixRx = /^(?:_$|[=@%]|)/;
+var quoteMeta = (k) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+var prefixRx = new RegExp("^(?:" + Object.keys(prefixes).map(quoteMeta).join("|") + ")");
 var expandConfigPackageName = (section) => section.replace(prefixRx, (prefix) => prefixes[prefix]);
 var parseDistINI = async (content) => {
   const prereqs = [];
   const rootSection = {
     section: "_",
+    pack: "Dist::Zilla",
     settings: {}
   };
-  const sections = [rootSection];
   let currentSettings = rootSection.settings;
+  const sections = [rootSection];
   for (const { section, comment, key, value } of peg$parse2(await content)) {
     if (section) {
+      const [, plugin, name] = section.match(/^([^\/]*)(?:\/(.*))?$/);
+      const pack = expandConfigPackageName(plugin);
       currentSettings = {};
-      sections.push({ section, settings: currentSettings });
+      sections.push({
+        section,
+        plugin,
+        pack,
+        name,
+        settings: currentSettings
+      });
     } else if (comment) {
       const res = comment.match(/^\s*authordep\s*(\S+)\s*(?:=\s*([^;]+))?\s*/);
       if (res !== null) {
@@ -22592,13 +22601,12 @@ var parseDistINI = async (content) => {
       version: ">=0"
     });
   }
-  for (const { section, settings } of sections) {
-    const plugin = expandConfigPackageName(section.replace(/\s*\/.*$/, ""));
+  for (const { section, pack, settings } of sections) {
     prereqs.push({
-      prereq: plugin,
+      prereq: pack,
       version: fullVersion(settings[":version"] || "0")
     });
-    if (plugin === "Dist::Zilla::PluginBundle::Filter" || plugin === "Dist::Zilla::PluginBundle::ConfigSlicer") {
+    if (pack === "Dist::Zilla::PluginBundle::Filter" || pack === "Dist::Zilla::PluginBundle::ConfigSlicer") {
       prereqs.push({
         prereq: expandConfigPackageName(settings["-bundle"]),
         version: fullVersion(settings["-version"] || "0")
