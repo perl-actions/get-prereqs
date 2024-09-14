@@ -1,3 +1,15 @@
+# 1.2.0 (2024-09-14)
+
+## New Features
+
+* Added `exclude` option.
+
+## Internal Changes
+
+* Revised to use eslint only for linting
+* Various refactorings
+* Additional tests
+
 # 1.1.0 (2024-09-13)
 
 ## New Features
