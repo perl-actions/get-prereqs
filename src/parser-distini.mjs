@@ -5,20 +5,20 @@ const prefixes = {
   '=': '',
   '@': 'Dist::Zilla::PluginBundle::',
   '%': 'Dist::Zilla::Stash::',
-  '': 'Dist::Zilla::Plugin::',
-  _: 'Dist::Zilla',
+  '':  'Dist::Zilla::Plugin::',
+  '_': 'Dist::Zilla',
 };
 
-const prefixRx = new RegExp('^(?:_$|[=@%]|)');
+const prefixRx = /^(?:_$|[=@%]|)/;
 
-const expandConfigPackageName = (section) =>
-  section.replace(prefixRx, (prefix) => prefixes[prefix]);
+const expandConfigPackageName = section =>
+  section.replace(prefixRx, prefix => prefixes[prefix]);
 
 export const parseDistINI = async (content) => {
   const prereqs = [];
 
   const rootSection = {
-    section: '_',
+    section:  '_',
     settings: {},
   };
   const sections = [rootSection];
@@ -28,16 +28,18 @@ export const parseDistINI = async (content) => {
     if (section) {
       currentSettings = {};
       sections.push({ section, settings: currentSettings });
-    } else if (comment) {
+    }
+    else if (comment) {
       const res = comment.match(/^\s*authordep\s*(\S+)\s*(?:=\s*([^;]+))?\s*/);
       if (res !== null) {
         const [, module, version] = res;
         prereqs.push({
-          prereq: module,
+          prereq:  module,
           version: fullVersion(version || '0'),
         });
       }
-    } else if (key) {
+    }
+    else if (key) {
       currentSettings[key] = value;
     }
   }
@@ -45,7 +47,7 @@ export const parseDistINI = async (content) => {
   const { license } = rootSection.settings;
   if (license) {
     prereqs.push({
-      prereq: 'Software::License::' + license,
+      prereq:  'Software::License::' + license,
       version: '>=0',
     });
   }
@@ -53,24 +55,24 @@ export const parseDistINI = async (content) => {
   for (const { section, settings } of sections) {
     const plugin = expandConfigPackageName(section.replace(/\s*\/.*$/, ''));
     prereqs.push({
-      prereq: plugin,
+      prereq:  plugin,
       version: fullVersion(settings[':version'] || '0'),
     });
 
     if (
-      plugin == 'Dist::Zilla::PluginBundle::Filter' ||
-      plugin == 'Dist::Zilla::PluginBundle::ConfigSlicer'
+      plugin === 'Dist::Zilla::PluginBundle::Filter'
+      || plugin === 'Dist::Zilla::PluginBundle::ConfigSlicer'
     ) {
       prereqs.push({
-        prereq: expandConfigPackageName(settings['-bundle']),
+        prereq:  expandConfigPackageName(settings['-bundle']),
         version: fullVersion(settings['-version'] || '0'),
       });
     }
   }
 
-  return prereqs.map((req) => ({
+  return prereqs.map(req => ({
     ...req,
-    phase: 'author',
+    phase:        'author',
     relationship: 'requires',
   }));
 };

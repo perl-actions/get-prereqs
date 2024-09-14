@@ -1,15 +1,14 @@
 import globals from 'globals';
-import js from '@eslint/js';
 import mochaPlugin from 'eslint-plugin-mocha';
-import prettierPlugin from 'eslint-plugin-prettier/recommended';
 import peggyPlugin from '@peggyjs/eslint-plugin/lib/flat/recommended.js';
+import stylistic from '@stylistic/eslint-plugin';
 
 export default [
   {
     ignores: ['src/*-peg.mjs', 'dist/'],
   },
   {
-    files: ['**/*.mjs'],
+    files:           ['**/*.mjs'],
     languageOptions: {
       sourceType: 'module',
     },
@@ -20,10 +19,19 @@ export default [
     },
   },
   peggyPlugin,
-  js.configs.recommended,
   mochaPlugin.configs.flat.recommended,
+  stylistic.configs.customize({
+    semi: true,
+  }),
   {
-    ...prettierPlugin,
-    ignores: ['**/*.pegjs'],
+    rules: {
+      '@stylistic/multiline-ternary': 'off',
+      '@stylistic/key-spacing':       [
+        'error',
+        {
+          align: 'value',
+        },
+      ],
+    },
   },
 ];

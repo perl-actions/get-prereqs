@@ -1,15 +1,15 @@
 import { fullVersion } from './cpan-versions.mjs';
 
 const fieldMapping = {
-  PREREQ_PM: ['runtime', 'requires'],
-  BUILD_REQUIRES: ['build', 'requires'],
-  TEST_REQUIRES: ['test', 'requires'],
+  PREREQ_PM:          ['runtime', 'requires'],
+  BUILD_REQUIRES:     ['build', 'requires'],
+  TEST_REQUIRES:      ['test', 'requires'],
   CONFIGURE_REQUIRES: ['configure', 'requires'],
-  MIN_PERL_VERSION: ['runtime', 'requires', 'perl'],
+  MIN_PERL_VERSION:   ['runtime', 'requires', 'perl'],
 };
 
 const prereqRx = new RegExp(
-  `^#\\s+(${Object.keys(fieldMapping).join('|')})\\s+=>\\s+(.*)`
+  `^#\\s+(${Object.keys(fieldMapping).join('|')})\\s+=>\\s+(.*)`,
 );
 
 export const parseMakefile = async (content) => {
@@ -29,12 +29,14 @@ export const parseMakefile = async (content) => {
         const valueRes = prereqString.match(/^\s*q\[(.*?)\]|(undef)/);
         if (valueRes) {
           prereqRes = [[null, module, ...[...valueRes].slice(1)]];
-        } else {
+        }
+        else {
           prereqRes = [];
         }
-      } else {
+      }
+      else {
         prereqRes = prereqString.matchAll(
-          /\s([\w:]+)=>(?:q\[(.*?)\]|(undef)),?/g
+          /\s([\w:]+)=>(?:q\[(.*?)\]|(undef)),?/g,
         );
       }
 

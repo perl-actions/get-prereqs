@@ -1,9 +1,9 @@
-import * as fs from 'node:fs/promises';
+import fs from 'node:fs/promises';
 import { parseCPANfile } from './parser-cpanfile.mjs';
 import { parseMakefile } from './parser-makefile.mjs';
 import { parseDistINI } from './parser-distini.mjs';
 import { fullVersion, mergeVersions } from './cpan-versions.mjs';
-import * as yaml from 'js-yaml';
+import yaml from 'js-yaml';
 
 const meta2Prereqs = (meta) => {
   const prereqs = [];
@@ -25,11 +25,11 @@ const meta2Prereqs = (meta) => {
 };
 
 const meta1fields = {
-  build_requires: ['build', 'requires'],
+  build_requires:     ['build', 'requires'],
   configure_requires: ['configure', 'requires'],
-  conflicts: ['runtime', 'conflicts'],
-  recommends: ['runtime', 'recommends'],
-  requires: ['runtime', 'requires'],
+  conflicts:          ['runtime', 'conflicts'],
+  recommends:         ['runtime', 'recommends'],
+  requires:           ['runtime', 'requires'],
 };
 const meta1Prereqs = (meta) => {
   const prereqs = [];
@@ -52,7 +52,7 @@ const metaFeaturePrereqs = (meta) => {
   const prereqs = [];
   if (meta.optional_features) {
     for (const [feature, featureMeta] of Object.entries(
-      meta.optional_features
+      meta.optional_features,
     )) {
       const featurePrereqs = meta2Prereqs(featureMeta);
       for (const prereq of featurePrereqs) {
@@ -64,7 +64,7 @@ const metaFeaturePrereqs = (meta) => {
   return prereqs;
 };
 
-const metaPrereqs = (meta) => [
+const metaPrereqs = meta => [
   ...meta1Prereqs(meta),
   ...meta2Prereqs(meta),
   ...metaFeaturePrereqs(meta),
@@ -92,17 +92,18 @@ const parseMetaYAML = async (content) => {
 
 const filterPrereqs = ({ prereqs, phases, relationships, features }) => {
   return prereqs.filter(
-    (prereq) =>
-      phases.has(prereq.phase) &&
-      relationships.has(prereq.relationship) &&
-      (!prereq.feature || features.includes(prereq.feature))
+    prereq =>
+      phases.has(prereq.phase)
+      && relationships.has(prereq.relationship)
+      && (!prereq.feature || features.includes(prereq.feature)),
   );
 };
 
 const sortByPrereq = (a, b) => {
   if (a.prereq < b.prereq) {
     return -1;
-  } else if (a.prereq > b.prereq) {
+  }
+  else if (a.prereq > b.prereq) {
     return 1;
   }
   return 0;
@@ -120,7 +121,8 @@ export const getPrereqs = async ({
       .catch((e) => {
         if (e.code === 'ENOENT') {
           return null;
-        } else {
+        }
+        else {
           throw e;
         }
       });
@@ -128,31 +130,32 @@ export const getPrereqs = async ({
       continue;
     }
 
-    const parser =
-      source.match(/prereqs\.json$/) ? parsePrereqsJSON
-      : source.match(/prereqs\.yml/) ? parsePrereqsYAML
-      : source.match(/\.json$/) ? parseMetaJSON
-      : source.match(/\.ya?ml$/) ? parseMetaYAML
-      : source.match(/makefile$/i) ? parseMakefile
-      : source.match(/cpanfile/i) ? parseCPANfile
-      : source.match(/dist\.ini/) ? parseDistINI
-      : null;
+    const parser
+      = source.match(/prereqs\.json$/) ? parsePrereqsJSON
+        : source.match(/prereqs\.yml/) ? parsePrereqsYAML
+          : source.match(/\.json$/) ? parseMetaJSON
+            : source.match(/\.ya?ml$/) ? parseMetaYAML
+              : source.match(/makefile$/i) ? parseMakefile
+                : source.match(/cpanfile/i) ? parseCPANfile
+                  : source.match(/dist\.ini/) ? parseDistINI
+                    : null;
     if (parser === null) {
       throw new Error(`Don't know how to parse ${source}`);
     }
 
     const filteredPrereqs = filterPrereqs({
-      prereqs: await parser(content),
-      phases: new Set(phases),
+      prereqs:       await parser(content),
+      phases:        new Set(phases),
       relationships: new Set(relationships),
-      features: new Set(features),
+      features:      new Set(features),
     }).toSorted(sortByPrereq);
 
     const prereqs = {};
     for (const { prereq, version } of filteredPrereqs) {
       if (prereqs[prereq]) {
         prereqs[prereq] = mergeVersions([version, prereqs[prereq]]);
-      } else {
+      }
+      else {
         prereqs[prereq] = version;
       }
     }

@@ -2,9 +2,8 @@
   "name": "get-prereqs",
   "version": "1.1.0",
   "description": "Get prereqs for local dist",
-  "main": "src/main.mjs",
+  "main": "src/get-prereqs.mjs",
   "scripts": {
-    "tidy": "prettier . --write",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "test": "mocha",
@@ -29,16 +28,14 @@
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {
-    "@peggyjs/eslint-parser": "^2.0.6",
     "@peggyjs/eslint-plugin": "^2.1.2",
+    "@stylistic/eslint-plugin": "^2.8.0",
+    "chai": "^5.1.1",
     "esbuild": "^0.23.1",
     "eslint": "^9.9.1",
-    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-mocha": "^10.5.0",
-    "eslint-plugin-prettier": "^5.2.1",
     "globals": "^15.9.0",
     "mocha": "^10.7.3",
-    "peggy": "^4.0.3",
-    "prettier": "^3.3.3"
+    "peggy": "^4.0.3"
   }
 }

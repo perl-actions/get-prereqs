@@ -20,7 +20,7 @@ const run = async () => {
   }
 
   const prereqString = Object.keys(prereqs)
-    .map((module) => `${module}\n`)
+    .map(module => `${module}\n`)
     .join('');
   const prereqVersionString = Object.entries(prereqs)
     .map(([module, version]) => `${module}${cpanmVersion(version)}\n`)
@@ -29,14 +29,13 @@ const run = async () => {
   core.setOutput('prereqs', prereqVersionString);
   core.setOutput('prereqs-no-version', prereqString);
   core.setOutput('prereqsJSON', JSON.stringify(prereqs));
-
-  return;
 };
 
 (async () => {
   try {
     await run();
-  } catch (error) {
+  }
+  catch (error) {
     core.setFailed(error.message);
   }
 })();
