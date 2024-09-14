@@ -1,3 +1,9 @@
+# 1.2.1 (2024-09-14)
+
+## Bug Fixes
+
+* Fixed handling of named plugins in `dist.ini`.
+
 # 1.2.0 (2024-09-14)
 
 ## New Features

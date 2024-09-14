@@ -19016,8 +19016,8 @@ var fullVersion = (version2) => {
   }).join(",");
 };
 var mergeVersions = (versionList) => {
-  const versions = versionList.map((v) => v.split(/\s*,\s*/)).flat();
-  return versions.filter((value, index, array) => array.indexOf(value) === index).join(",");
+  const versions = versionList.map((v) => v.split(/\s*,\s*/)).flat().filter((value, index, array) => array.indexOf(value) === index).filter((v) => v !== ">=0");
+  return versions.length ? versions.join(",") : ">=0";
 };
 var cpanmVersion = (version2) => {
   const versions = version2.split(/\s*,\s*/);
@@ -22571,7 +22571,7 @@ var parseDistINI = async (content) => {
   const sections = [rootSection];
   for (const { section, comment, key, value } of peg$parse2(await content)) {
     if (section) {
-      const [, plugin, name] = section.match(/^([^\/]*)(?:\/(.*))?$/);
+      const [, plugin, name] = section.match(/^([^\/]*?)\s*(?:\/\s*(.*))?$/);
       const pack = expandConfigPackageName(plugin);
       currentSettings = {};
       sections.push({
@@ -25332,7 +25332,7 @@ var filterPrereqs = ({
   excludes
 }) => {
   return prereqs.filter(
-    (prereq) => phases.has(prereq.phase) && relationships.has(prereq.relationship) && (!prereq.feature || features.includes(prereq.feature)) && !excludes.filter((ex) => ex.exec(prereq.prereq)).length
+    (prereq) => phases.has(prereq.phase) && relationships.has(prereq.relationship) && (!prereq.feature || features.includes(prereq.feature)) && excludes.filter((ex) => ex.exec(prereq.prereq)).length === 0
   );
 };
 var parsers = [
