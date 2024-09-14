@@ -27,7 +27,8 @@ export const parseDistINI = async (content) => {
 
   for (const { section, comment, key, value } of parse(await content)) {
     if (section) {
-      const [, plugin, name] = section.match(/^([^\/]*)(?:\/(.*))?$/);
+      const [, plugin, name] = section.match(/^([^\/]*?)\s*(?:\/\s*(.*))?$/);
+
       const pack = expandConfigPackageName(plugin);
 
       currentSettings = {};

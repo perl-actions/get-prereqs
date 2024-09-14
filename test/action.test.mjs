@@ -51,4 +51,28 @@ describe('GitHub action', function () {
       'prereqsJSON':        '{"CPAN::Meta":">=2.120900"}',
     });
   });
+
+  it('works with dist.ini', async function () {
+    const { outputs } = await main({
+      sources:       joinPath(__dirname, 'corpus', 'dist.ini'),
+      phases:        'author',
+      relationships: 'requires',
+      features:      '',
+      exclude:       '^inc::',
+    });
+    expect(outputs.prereqs).to.be.equal(`
+      Dist::Zilla~5.0
+      Dist::Zilla::Plugin::GatherFile
+      Dist::Zilla::Plugin::Git::GatherDir~5
+      Dist::Zilla::Plugin::PodWeaver
+      Dist::Zilla::Plugin::Substitute~3
+      Dist::Zilla::PluginBundle::Basic~6
+      Dist::Zilla::PluginBundle::ConfigSlicer
+      Dist::Zilla::PluginBundle::Filter~2
+      Dist::Zilla::PluginBundle::Git::VersionManager
+      Pod::Weaver::Plugin::StopWords
+      Pod::Weaver::Section::Contributors
+      Software::License::Perl_5
+    `.trimStart().replace(/^ */mg, ''));
+  });
 });
