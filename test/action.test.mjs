@@ -43,6 +43,7 @@ describe('GitHub action', function () {
       phases:        'test',
       relationships: 'recommends',
       features:      '',
+      excludes:      '',
     });
     expect(outputs).to.be.deep.equal({
       'prereqs':            'CPAN::Meta~2.120900\n',

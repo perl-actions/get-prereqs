@@ -7,17 +7,20 @@ export const run = async () => {
   const relationshipsInput = core.getInput('relationships');
   const featuresInput = core.getInput('features');
   const sourcesInput = core.getInput('sources');
+  const excludeInput = core.getMultilineInput('exclude');
 
   const phases = new Set(phasesInput.split(/\s+/));
   const relationships = new Set(relationshipsInput.split(/\s+/));
   const features = new Set(featuresInput.split(/\s+/));
   const sources = sourcesInput.split(/\s+/);
+  const excludes = excludeInput.filter(p => p.length).map(p => new RegExp(p));
 
   const { perl, ...prereqs } = await getPrereqs({
     phases,
     relationships,
     features,
     sources,
+    excludes,
   });
 
   if (perl) {

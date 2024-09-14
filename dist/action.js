@@ -25324,9 +25324,15 @@ var parseMetaYAML = async (content) => {
 };
 
 // src/get-prereqs.mjs
-var filterPrereqs = ({ prereqs, phases, relationships, features }) => {
+var filterPrereqs = ({
+  prereqs,
+  phases,
+  relationships,
+  features,
+  excludes
+}) => {
   return prereqs.filter(
-    (prereq) => phases.has(prereq.phase) && relationships.has(prereq.relationship) && (!prereq.feature || features.includes(prereq.feature))
+    (prereq) => phases.has(prereq.phase) && relationships.has(prereq.relationship) && (!prereq.feature || features.includes(prereq.feature)) && !excludes.filter((ex) => ex.exec(prereq.prereq)).length
   );
 };
 var parsers = [
@@ -25358,7 +25364,8 @@ var getPrereqs = async ({
   phases = ["build", "test", "runtime"],
   relationships = ["requires"],
   features = [],
-  sources
+  sources,
+  excludes = []
 }) => {
   for (const source of sources) {
     const parser = parserFor(source);
@@ -25373,11 +25380,13 @@ var getPrereqs = async ({
       }
     }
     const content = fh.readFile({ encoding: "utf8" });
+    const allPrereqs = await parser(content);
     const filteredPrereqs = filterPrereqs({
-      prereqs: await parser(content),
+      prereqs: allPrereqs,
       phases: new Set(phases),
       relationships: new Set(relationships),
-      features: new Set(features)
+      features: new Set(features),
+      excludes
     }).toSorted(sortByPrereq);
     const prereqs = {};
     for (const { prereq, version: version2 } of filteredPrereqs) {
@@ -25398,15 +25407,18 @@ var run = async () => {
   const relationshipsInput = import_core.default.getInput("relationships");
   const featuresInput = import_core.default.getInput("features");
   const sourcesInput = import_core.default.getInput("sources");
+  const excludeInput = import_core.default.getMultilineInput("exclude");
   const phases = new Set(phasesInput.split(/\s+/));
   const relationships = new Set(relationshipsInput.split(/\s+/));
   const features = new Set(featuresInput.split(/\s+/));
   const sources = sourcesInput.split(/\s+/);
+  const excludes = excludeInput.filter((p) => p.length).map((p) => new RegExp(p));
   const { perl, ...prereqs } = await getPrereqs({
     phases,
     relationships,
     features,
-    sources
+    sources,
+    excludes
   });
   if (perl) {
     import_core.default.setOutput("perl", dottedVersion(perl));

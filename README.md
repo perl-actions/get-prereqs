@@ -60,6 +60,10 @@ List of files to search for prerequisites. Supported formats are:
 
 Defaults to `MYMETA.json MYMETA.yml META.json META.yml Makefile cpanfile`.
 
+### `excludes`
+
+A list of regular expressions of prerequisites to exclude. One pattern per line.
+
 ## Outputs
 
 ### `perl`

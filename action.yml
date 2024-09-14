@@ -21,6 +21,9 @@ inputs:
     description: 'Source files to check for prerequisites'
     required: false
     default: 'MYMETA.json MYMETA.yml META.json META.yml Makefile cpanfile'
+  exclude:
+    description: 'Patterns to exclude from returned prerequisites'
+    required: false
 
 outputs:
   perl:

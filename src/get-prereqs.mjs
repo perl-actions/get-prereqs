@@ -10,12 +10,19 @@ import {
 } from './parser/meta.mjs';
 import { mergeVersions } from './cpan-versions.mjs';
 
-const filterPrereqs = ({ prereqs, phases, relationships, features }) => {
+const filterPrereqs = ({
+  prereqs,
+  phases,
+  relationships,
+  features,
+  excludes,
+}) => {
   return prereqs.filter(
     prereq =>
       phases.has(prereq.phase)
       && relationships.has(prereq.relationship)
-      && (!prereq.feature || features.includes(prereq.feature)),
+      && (!prereq.feature || features.includes(prereq.feature))
+      && !excludes.filter(ex => ex.exec(prereq.prereq)).length,
   );
 };
 
@@ -53,6 +60,7 @@ export const getPrereqs = async ({
   relationships = ['requires'],
   features = [],
   sources,
+  excludes = [],
 }) => {
   for (const source of sources) {
     const parser = parserFor(source);
@@ -72,11 +80,14 @@ export const getPrereqs = async ({
 
     const content = fh.readFile({ encoding: 'utf8' });
 
+    const allPrereqs = await parser(content);
+
     const filteredPrereqs = filterPrereqs({
-      prereqs:       await parser(content),
+      prereqs:       allPrereqs,
       phases:        new Set(phases),
       relationships: new Set(relationships),
       features:      new Set(features),
+      excludes,
     }).toSorted(sortByPrereq);
 
     const prereqs = {};

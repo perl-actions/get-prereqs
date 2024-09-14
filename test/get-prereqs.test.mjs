@@ -71,4 +71,26 @@ describe('getPrereqs', function () {
       'inc::bootstrap':                                 '>=0',
     });
   });
+
+  it('excludes applies correctly', async function () {
+    const filename = joinPath(__dirname, 'corpus', 'dist.ini');
+    const prereqs = await getPrereqs({
+      sources:  [filename],
+      phases:   ['author'],
+      excludes: [/^inc::/],
+    });
+    expect(prereqs).to.be.deep.equal({
+      'Dist::Zilla':                                    '>=5.0',
+      'Dist::Zilla::Plugin::GatherFile':                '>=0',
+      'Dist::Zilla::Plugin::Git::GatherDir':            '>=5',
+      'Dist::Zilla::Plugin::PodWeaver':                 '>=0',
+      'Dist::Zilla::PluginBundle::Basic':               '>=0,>=6',
+      'Dist::Zilla::PluginBundle::ConfigSlicer':        '>=0',
+      'Dist::Zilla::PluginBundle::Filter':              '>=2',
+      'Dist::Zilla::PluginBundle::Git::VersionManager': '>=0',
+      'Pod::Weaver::Plugin::StopWords':                 '>=0',
+      'Pod::Weaver::Section::Contributors':             '>=0',
+      'Software::License::Perl_5':                      '>=0',
+    });
+  });
 });
