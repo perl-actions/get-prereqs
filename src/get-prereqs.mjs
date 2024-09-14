@@ -22,7 +22,7 @@ const filterPrereqs = ({
       phases.has(prereq.phase)
       && relationships.has(prereq.relationship)
       && (!prereq.feature || features.includes(prereq.feature))
-      && !excludes.filter(ex => ex.exec(prereq.prereq)).length,
+      && excludes.filter(ex => ex.exec(prereq.prereq)).length === 0,
   );
 };
 
