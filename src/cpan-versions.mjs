@@ -27,10 +27,10 @@ export const simpleVersion = (version) => {
 };
 
 export const mergeVersions = (versionList) => {
-  const versions = versionList.map(v => v.split(/\s*,\s*/)).flat();
-  return versions
+  const versions = versionList.map(v => v.split(/\s*,\s*/)).flat()
     .filter((value, index, array) => array.indexOf(value) === index)
-    .join(',');
+    .filter(v => v !== '>=0');
+  return versions.length ? versions.join(',') : '>=0';
 };
 
 export const cpanmVersion = (version) => {
