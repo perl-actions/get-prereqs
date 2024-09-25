@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import { parseCPANfile } from './parser/cpanfile.mjs';
 import { parseMakefile } from './parser/makefile.mjs';
+import { parseBuildPrereqs } from './parser/build-prereqs.mjs';
 import { parseDistINI } from './parser/distini.mjs';
 import {
   parsePrereqsJSON,
@@ -31,6 +32,7 @@ const parsers = [
   [/prereqs\.yml$/, parsePrereqsYAML],
   [/\.json$/, parseMetaJSON],
   [/\.ya?ml$/, parseMetaYAML],
+  [/_build[/\\]prereqs$/, parseBuildPrereqs],
   [/makefile$/i, parseMakefile],
   [/cpanfile/i, parseCPANfile],
   [/dist\.ini$/, parseDistINI],

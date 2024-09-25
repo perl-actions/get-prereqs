@@ -57,8 +57,11 @@ List of files to search for prerequisites. Supported formats are:
 - `dist.ini` as used by [Dist::Zilla](https://metacpan.org/pod/Dist::Zilla).
   This will only extract the needed to run a `dzil build`, listing them with
   the unofficial phase of `author`.
+- `_build/params` as emitted by
+  [Module::Build](https://metacpan.org/pod/Module::Build). This was used to
+  communicate dependencies before `MYMETA` files were invented.
 
-Defaults to `MYMETA.json MYMETA.yml META.json META.yml Makefile cpanfile`.
+Defaults to `MYMETA.json MYMETA.yml META.json META.yml Makefile _build/params cpanfile`.
 
 ### `excludes`
 

@@ -20,7 +20,7 @@ inputs:
   sources:
     description: 'Source files to check for prerequisites'
     required: false
-    default: 'MYMETA.json MYMETA.yml META.json META.yml Makefile cpanfile'
+    default: 'MYMETA.json MYMETA.yml META.json META.yml Makefile _build/prereqs cpanfile'
   exclude:
     description: 'Patterns to exclude from returned prerequisites'
     required: false
