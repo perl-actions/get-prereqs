@@ -28,12 +28,12 @@ const filterPrereqs = ({
 
 const parsers = [
   [/prereqs\.json$/, parsePrereqsJSON],
-  [/prereqs\.yml/, parsePrereqsYAML],
+  [/prereqs\.yml$/, parsePrereqsYAML],
   [/\.json$/, parseMetaJSON],
   [/\.ya?ml$/, parseMetaYAML],
   [/makefile$/i, parseMakefile],
   [/cpanfile/i, parseCPANfile],
-  [/dist\.ini/, parseDistINI],
+  [/dist\.ini$/, parseDistINI],
 ];
 
 const parserFor = (file) => {
