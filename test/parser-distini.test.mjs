@@ -97,6 +97,12 @@ describe('dist.ini parser', function () {
         relationship: 'requires',
         version:      '>=0',
       },
+      {
+        phase:        'author',
+        prereq:       'Dist::Zilla::Plugin::Substitute',
+        relationship: 'requires',
+        version:      '>=3',
+      },
     ]);
   });
 });
