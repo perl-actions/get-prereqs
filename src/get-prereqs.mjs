@@ -81,6 +81,7 @@ export const getPrereqs = async ({
     const content = fh.readFile({ encoding: 'utf8' });
 
     const allPrereqs = await parser(content);
+    await fh.close();
 
     const filteredPrereqs = filterPrereqs({
       prereqs:       allPrereqs,
