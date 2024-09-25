@@ -1,5 +1,6 @@
-import { parse } from './ini-peg.mjs';
 import { fullVersion } from './../cpan-versions.mjs';
+import '../peggy-loader.mjs';
+const { parse } = await import('./ini.pegjs');
 
 const prefixes = {
   '=': '',
