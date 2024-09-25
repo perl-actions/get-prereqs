@@ -7,8 +7,8 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-describe('dist.ini', function () {
-  it('parsed correctly', async function () {
+describe('dist.ini parser', function () {
+  it('parses dist.ini correctly', async function () {
     const filename = joinPath(__dirname, 'corpus', 'dist.ini');
     const content = await fs.readFile(filename, { encoding: 'utf8' });
     const prereqs = await parseDistINI(content);
