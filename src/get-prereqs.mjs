@@ -73,7 +73,10 @@ export const getPrereqs = async ({
     'cpanfile',
   ],
   excludes = [],
+  allSources = false,
 }) => {
+  const prereqs = {};
+
   for (const source of sources) {
     const parser = parserFor(source);
 
@@ -103,7 +106,6 @@ export const getPrereqs = async ({
       excludes,
     }).toSorted(sortByPrereq);
 
-    const prereqs = {};
     for (const { prereq, version } of filteredPrereqs) {
       if (prereqs[prereq]) {
         prereqs[prereq] = mergeVersions([version, prereqs[prereq]]);
@@ -113,8 +115,10 @@ export const getPrereqs = async ({
       }
     }
 
-    return prereqs;
+    if (!allSources) {
+      break;
+    }
   }
 
-  return {};
+  return prereqs;
 };

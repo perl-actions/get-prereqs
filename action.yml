@@ -25,6 +25,10 @@ inputs:
     description: 'Patterns to exclude from returned prerequisites'
     required: false
     default: ''
+  all-sources:
+    description: 'Include prerequisites from all sources rather than only the first'
+    required: false
+    default: false
 
 outputs:
   perl:

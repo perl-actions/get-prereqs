@@ -8,6 +8,7 @@ export const run = async () => {
   const featuresInput = core.getInput('features');
   const sourcesInput = core.getInput('sources');
   const excludeInput = core.getMultilineInput('exclude');
+  const allSources = core.getBooleanInput('all-sources');
 
   const phases = new Set(phasesInput.split(/\s+/));
   const relationships = new Set(relationshipsInput.split(/\s+/));
@@ -21,6 +22,7 @@ export const run = async () => {
     features,
     sources,
     excludes,
+    allSources,
   });
 
   if (perl) {
