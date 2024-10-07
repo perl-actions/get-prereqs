@@ -1,0 +1,47 @@
+name: recreate major and minor tags
+
+on:
+  push:
+    tags: v*.*.*
+
+jobs:
+  retag:
+    runs-on: ubuntu-latest
+      - name: Recreate Major and Minor Tags
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const {
+              ref,
+              repo: {
+                owner,
+                repo,
+              },
+              sha,
+            } = context;
+
+            const tagMatch = ref.match(/^((v[0-9]+)\.[0-9]+)\.[0-9]+$/);
+
+            if (tagMatch !== null) {
+              const [, major, minor] = tagMatch;
+
+              for (const tag of [major, minor]) {
+                const tagRef = 'refs/tags/' + tag;
+                github.rest.git.createRef({
+                  owner,
+                  repo,
+                  ref: tagRef,
+                  sha,
+                }).catch(err => {
+                  if (err.status !== 422) {
+                    throw err;
+                  }
+                  github.rest.git.updateRef({
+                    owner,
+                    repo,
+                    ref: tagRef,
+                    sha,
+                  });
+                });
+              }
+            }
