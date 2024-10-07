@@ -7,7 +7,10 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "test": "mocha",
-    "build": "./build-release.mjs"
+    "build": "./build-release.mjs",
+    "preversion": "npm test",
+    "version": "npm run build && ./prep-changelog && git add -A dist CHANGELOG.md",
+    "postversion": "git push origin HEAD && git push origin v$(npm pkg get version --workspaces=false | tr -d \\\") && git push -f origin $(./retag)"
   },
   "repository": {
     "type": "git",

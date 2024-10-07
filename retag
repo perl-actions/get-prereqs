@@ -1,0 +1,42 @@
+#!/usr/bin/env node
+
+import process from 'node:process';
+import child_process from 'node:child_process';
+import { promisify } from 'node:util';
+import { readFile } from 'node:fs/promises';
+
+const execFile = promisify(child_process.execFile);
+
+async function main() {
+  let version;
+  if (process.argv.length == 2) {
+    const content = await readFile('./package.json', { encoding: 'utf8' });
+    version = JSON.parse(content).version;
+  }
+  else if (process.argv.length == 3) {
+    version = process.argv[2];
+  }
+  else {
+    throw new Error(`Invalid args ${process.argv.join(', ')}`);
+  }
+
+  const res = version.match(/^v?((([0-9]+)\.[0-9]+)\.[0-9]+)$/);
+  if (res === null) {
+    throw new Error(`Invalid version ${version}`);
+  }
+
+  const [ , patch, minor, major ] = res;
+
+  const { stdout, stderr } = await execFile('git', ['rev-parse', '--verify', '--quiet', `v${patch}`]);
+  if (stderr.length) {
+    process.stderr.write(stderr);
+  }
+  const tagRef = stdout.trim();
+
+  for (const tag of [minor, major]) {
+    await execFile('git', ['update-ref', `refs/tags/v${tag}`, tagRef]);
+    process.stdout.write(`v${tag}\n`);
+  }
+}
+
+main();
