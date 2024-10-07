@@ -61,7 +61,15 @@ export const getPrereqs = async ({
   phases = ['build', 'test', 'runtime'],
   relationships = ['requires'],
   features = [],
-  sources,
+  sources = [
+    'MYMETA.json',
+    'MYMETA.yml',
+    'META.json',
+    'META.yml',
+    '_build/prereqs',
+    'Makefile',
+    'cpanfile',
+  ],
   excludes = [],
 }) => {
   for (const source of sources) {
