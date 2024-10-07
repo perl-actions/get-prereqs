@@ -28,7 +28,7 @@ export const parseDistINI = async (content) => {
 
   for (const { section, comment, key, value } of parse(await content)) {
     if (section) {
-      const [, plugin, name] = section.match(/^([^\/]*?)\s*(?:\/\s*(.*))?$/);
+      const [, plugin, name] = section.match(/^([^/]*?)\s*(?:\/\s*(.*))?$/);
 
       const pack = expandConfigPackageName(plugin);
 
@@ -64,7 +64,7 @@ export const parseDistINI = async (content) => {
     });
   }
 
-  for (const { section, pack, settings } of sections) {
+  for (const { pack, settings } of sections) {
     prereqs.push({
       prereq:  pack,
       version: fullVersion(settings[':version'] || '0'),
