@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import { parseCPANfile } from './parser/cpanfile.mjs';
 import { parseMakefile } from './parser/makefile.mjs';
+import { parseMakefilePL } from './parser/makefile-pl.mjs';
 import { parseBuildPrereqs } from './parser/build-prereqs.mjs';
 import { parseDistINI } from './parser/distini.mjs';
 import {
@@ -36,6 +37,7 @@ const parsers = [
   [/makefile$/i, parseMakefile],
   [/cpanfile/i, parseCPANfile],
   [/dist\.ini$/, parseDistINI],
+  [/Makefile.PL$/i, parseMakefilePL],
 ];
 
 const parserFor = (file) => {

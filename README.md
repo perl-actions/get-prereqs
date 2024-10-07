@@ -60,6 +60,8 @@ List of files to search for prerequisites. Supported formats are:
 - `_build/params` as emitted by
   [Module::Build](https://metacpan.org/pod/Module::Build). This was used to
   communicate dependencies before `MYMETA` files were invented.
+- `Makefile.PL`, scanned for `use v5.xx;` or `MIN_PERL_VERSION => "5.xxx"`
+  declarations.
 
 Defaults to `MYMETA.json MYMETA.yml META.json META.yml Makefile _build/params cpanfile`.
 
