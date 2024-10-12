@@ -9,6 +9,9 @@ const config = {
   outdir:       'dist',
   outExtension: { '.js': '.mjs' },
   bundle:       true,
+  banner: {
+    js: "import { createRequire } from 'node:module';\nconst require = createRequire(import.meta.url);",
+  },
   platform:     'node',
   target:       ['node20'],
   dropLabels:   ['NOCOMPILE'],
