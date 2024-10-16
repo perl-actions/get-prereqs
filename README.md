@@ -9,7 +9,7 @@ GitHub action to get prerequisites for a local CPAN distribution.
 - name: Install prerequisites
   uses: perl-actions/install-with-cpanm@v1
   with:
-    install: ${{ steps.get-prereqs.prereqs }}
+    install: ${{ steps.get-prereqs.outputs.prereqs }}
 ```
 
 ## Inputs
