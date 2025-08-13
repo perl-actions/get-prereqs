@@ -29,6 +29,10 @@ inputs:
     description: 'Include prerequisites from all sources rather than only the first'
     required: false
     default: false
+  omit-core:
+    description: 'Omit core-only prerequisites'
+    required: false
+    default: true
 
 outputs:
   perl:

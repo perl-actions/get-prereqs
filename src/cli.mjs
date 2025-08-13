@@ -21,6 +21,7 @@ export const run = async (argv) => {
         boolean: [
           'perl',
           'allSources',
+          'omitCore',
         ],
         string: [
           'phases',
@@ -35,6 +36,7 @@ export const run = async (argv) => {
           features:      'feature',
           sources:       'source',
           allSources:    ['all-sources', 'all'],
+          omitCore:      ['omit-core'],
         },
       }),
     ).map(([k, v]) => {

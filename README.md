@@ -71,6 +71,11 @@ Defaults to `MYMETA.json MYMETA.yml META.json META.yml Makefile _build/params cp
 
 A list of regular expressions of prerequisites to exclude. One pattern per line.
 
+### `omit-core`
+
+A boolean value to exclude core only modules from the output. Enabled by
+default.
+
 ## Outputs
 
 ### `perl`
