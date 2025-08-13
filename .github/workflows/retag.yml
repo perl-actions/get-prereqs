@@ -1,4 +1,4 @@
-name: recreate major and minor tags
+name: Recreate Major and Minor Tags
 
 on:
   push:
@@ -7,6 +7,8 @@ on:
 jobs:
   retag:
     runs-on: ubuntu-latest
+    name: Recreate Major and Minor Tags
+    steps:
       - name: Recreate Major and Minor Tags
         uses: actions/github-script@v5
         with:
