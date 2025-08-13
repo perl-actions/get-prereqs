@@ -13,7 +13,7 @@ jobs:
           sources: test/corpus/META.json
       - run: echo $PREREQS
         env:
-          PREREQS: ${{ steps.get-prereqs.prereqs }}
+          PREREQS: ${{ steps.get-prereqs.outputs.prereqs }}
   test:
     runs-on: ubuntu-latest
     steps:
