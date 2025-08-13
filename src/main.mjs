@@ -9,6 +9,7 @@ export const run = async () => {
   const sourcesInput = core.getInput('sources');
   const excludeInput = core.getMultilineInput('exclude');
   const allSources = core.getBooleanInput('all-sources');
+  const omitCore = core.getBooleanInput('omit-core');
 
   const phases = new Set(phasesInput.split(/\s+/));
   const relationships = new Set(relationshipsInput.split(/\s+/));
@@ -23,6 +24,7 @@ export const run = async () => {
     sources,
     excludes,
     allSources,
+    omitCore,
   });
 
   if (perl) {
