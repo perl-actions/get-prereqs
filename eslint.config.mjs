@@ -20,7 +20,7 @@ export default [
     },
   },
   peggyPlugin,
-  mochaPlugin.configs.flat.recommended,
+  mochaPlugin.configs.recommended,
   js.configs.recommended,
   stylistic.configs.customize({
     semi: true,
