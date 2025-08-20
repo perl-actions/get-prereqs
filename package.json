@@ -1,6 +1,6 @@
 {
   "name": "get-prereqs",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Get prereqs for local dist",
   "main": "src/get-prereqs.mjs",
   "type": "module",

@@ -1,6 +1,6 @@
 # Change log
 
-## Unreleased
+## 1.4.0 (2025-08-20)
 
 ### New features
 
