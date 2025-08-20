@@ -37,7 +37,7 @@ const parsers = [
   [/makefile$/i, parseMakefile],
   [/cpanfile/i, parseCPANfile],
   [/dist\.ini$/, parseDistINI],
-  [/Makefile.PL$/i, parseMakefilePL],
+  [/Makefile\.PL$/i, parseMakefilePL],
 ];
 
 const coreModules = [

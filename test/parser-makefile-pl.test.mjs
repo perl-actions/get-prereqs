@@ -13,6 +13,12 @@ describe('Makefile.PL parser', function () {
     const content = await fs.readFile(filename, { encoding: 'utf8' });
     const prereqs = await parseMakefilePL(content);
     expect(prereqs).to.be.deep.equal([
+      {
+        phase:        'configure',
+        relationship: 'requires',
+        prereq:       'perl',
+        version:      '>=v5.10',
+      },
     ]);
   });
 
@@ -21,6 +27,12 @@ describe('Makefile.PL parser', function () {
     const content = await fs.readFile(filename, { encoding: 'utf8' });
     const prereqs = await parseMakefilePL(content);
     expect(prereqs).to.be.deep.equal([
+      {
+        phase:        'runtime',
+        relationship: 'requires',
+        prereq:       'perl',
+        version:      '>=v5.6',
+      },
     ]);
   });
 });

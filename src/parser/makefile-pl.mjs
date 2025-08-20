@@ -1,14 +1,14 @@
 import { fullVersion, dottedVersion } from './../cpan-versions.mjs';
 
-const versionRx = /(?<version>v?[0-9][0-9_]*(?:\\.[0-9_])*)/;
+const versionRx = /(?<version>v?[0-9][0-9_]*(?:\.[0-9_]+)*)/;
 
 const perlPrereqRxs = [
   {
-    rx:    '^\\s*(?:use|require)\\s+' + versionRx + '\\b\\s*;',
+    rx:    '^\\s*(?:use|require)\\s+' + versionRx.source + '\\s*;',
     phase: 'configure',
   },
   {
-    rx:    '^\\s*([\'"]?)MIN_PERL_VERSION\\1\\s*=>\\s*([\'"]?)' + versionRx + '\\b\\2',
+    rx:    '^\\s*([\'"]?)MIN_PERL_VERSION\\1\\s*=>\\s*([\'"]?)' + versionRx.source + '\\b\\2',
     phase: 'runtime',
   },
 ].map(({ rx, ...rest }) => ({ rx: new RegExp(rx), ...rest }));
@@ -40,7 +40,7 @@ export const parseMakefilePL = async (content) => {
     for (const { rx, phase } of perlPrereqRxs) {
       const res = line.match(rx);
       if (res !== null) {
-        let { version } = res;
+        let { version } = res.groups;
         version = fullVersion(dottedVersion(version));
 
         prereqs.push({
