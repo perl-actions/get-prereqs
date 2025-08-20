@@ -1,5 +1,21 @@
 # Change log
 
+## Unreleased
+
+### New features
+
+* Added omit-core option to exclude core only dependencies from the output
+
+### Bug Fixes
+
+* Fixed documentation of supported formats
+* Fixed example in README
+* Fixed parsing of Makefile.PL for perl prerequisite
+
+### Internal Changes
+
+* Updated prereqs
+
 ## 1.3.0 (2024-10-12)
 
 ### New Features
