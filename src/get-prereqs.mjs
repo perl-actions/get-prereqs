@@ -40,6 +40,35 @@ const parsers = [
   [/Makefile.PL$/i, parseMakefilePL],
 ];
 
+const coreModules = [
+  'B',
+  'B::Deparse',
+  'Config',
+  'DynaLoader',
+  'English',
+  'POSIX',
+  'Symbol',
+  'UNIVERSAL',
+  'blib',
+  'bytes',
+  'charnames',
+  'deprecate',
+  'feature',
+  'integer',
+  'lib',
+  'open',
+  'overload',
+  'overloading',
+  're',
+  'sort',
+  'strict',
+  'utf8',
+  'vars',
+  'warnings',
+];
+
+const coreMatch = new RegExp(`^(?:${coreModules.join('|')})$`);
+
 const parserFor = (file) => {
   for (const [pattern, parser] of parsers) {
     if (file.match(pattern)) {
@@ -74,8 +103,13 @@ export const getPrereqs = async ({
   ],
   excludes = [],
   allSources = false,
+  omitCore = true,
 }) => {
   const prereqs = {};
+
+  if (omitCore) {
+    excludes = [...excludes, coreMatch];
+  }
 
   for (const source of sources) {
     const parser = parserFor(source);
