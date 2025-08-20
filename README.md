@@ -53,7 +53,7 @@ List of files to search for prerequisites. Supported formats are:
   in JSON and YAML formats. These files must named `prereqs.yml` or
   `prereqs.json`.
 - `Makefile` as emitted by [ExtUtils::MakeMaker](https://metacpan.org/pod/ExtUtils::MakeMaker).
-  This was used to communicated dependencies before `MYMETA` files were
+  This was used to communicate dependencies before `MYMETA` files were
   invented.
 - `_build/params` as emitted by
   [Module::Build](https://metacpan.org/pod/Module::Build). This was used to
