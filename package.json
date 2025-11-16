@@ -26,7 +26,7 @@
   "homepage": "https://github.com/perl-actions/get-prereqs#readme",
   "dependencies": {
     "@actions/core": "^1.11.1",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^4.1.1",
     "minimist": "^1.2.8",
     "peggy": "^5.0.6"
   },
