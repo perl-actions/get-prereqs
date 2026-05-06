@@ -25,21 +25,21 @@
   },
   "homepage": "https://github.com/perl-actions/get-prereqs#readme",
   "dependencies": {
-    "@actions/core": "^1.11.1",
+    "@actions/core": "^3.0.1",
     "js-yaml": "^4.1.1",
     "minimist": "^1.2.8",
-    "peggy": "^5.0.6"
+    "peggy": "^5.1.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.33.0",
+    "@eslint/js": "^10.0.1",
     "@peggyjs/eslint-plugin": "^2.1.2",
-    "@stylistic/eslint-plugin": "^5.2.3",
-    "chai": "^5.2.1",
-    "esbuild": "^0.25.9",
-    "eslint": "^9.33.0",
-    "eslint-plugin-mocha": "^11.1.0",
-    "esmock": "^2.7.1",
-    "globals": "^16.3.0",
-    "mocha": "^11.7.1"
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "chai": "^6.2.2",
+    "esbuild": "^0.28.0",
+    "eslint": "^10.3.0",
+    "eslint-plugin-mocha": "^11.2.0",
+    "esmock": "^2.7.5",
+    "globals": "^17.6.0",
+    "mocha": "^v12.0.0-beta-9.3"
   }
 }
