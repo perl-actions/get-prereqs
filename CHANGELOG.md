@@ -1,5 +1,17 @@
 # Change log
 
+## Unreleased
+
+### Major Changes
+
+* Updated to run with Node 24
+
+### Updated prereqs
+
+* @actions/core updated from v1.11.1 to v3.0.1
+* js-yaml updated from v4.1.0 to v4.1.1
+* peggy updated from v5.0.6 to v5.1.0
+
 ## 1.4.0 (2025-08-20)
 
 ### New features
