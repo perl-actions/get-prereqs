@@ -13,7 +13,7 @@ const config = {
     js: 'import { createRequire } from \'node:module\';\nconst require = createRequire(import.meta.url);',
   },
   platform:   'node',
-  target:     ['node20'],
+  target:     ['node24'],
   dropLabels: ['NOCOMPILE'],
   minify:     true,
   plugins:    [

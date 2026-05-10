@@ -45,5 +45,5 @@ outputs:
     description: 'The prerequisites as a string of JSON containing an object with modules as the keys and versions as the values'
 
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/action.mjs'
