@@ -1,4 +1,4 @@
-import core from '@actions/core';
+import * as core from '@actions/core';
 import { getPrereqs } from './get-prereqs.mjs';
 import { cpanmVersion, dottedVersion } from './cpan-versions.mjs';
 
