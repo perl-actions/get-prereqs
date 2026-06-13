@@ -35,7 +35,7 @@
     "@peggyjs/eslint-plugin": "^2.1.2",
     "@stylistic/eslint-plugin": "^5.10.0",
     "chai": "^6.2.2",
-    "esbuild": "^0.28.0",
+    "esbuild": "^0.28.1",
     "eslint": "^10.3.0",
     "eslint-plugin-mocha": "^11.2.0",
     "esmock": "^2.7.5",
