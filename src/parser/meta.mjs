@@ -1,4 +1,4 @@
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 import { metaPrereqs } from './../cpan-meta.mjs';
 
 export const parsePrereqsJSON = async (content) => {
